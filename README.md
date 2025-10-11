@@ -63,6 +63,13 @@ limitations under the License.
 
 ## Dependencies
 
+## Dependencies
+
+### Runtime
 - **Kokkos** (BSD-3-Clause) - Parallel programming ecosystem
   - Automatically fetched via CMake FetchContent - not yet
-  - Used for GPU/CPU parallelization of RK4 integration
+  - Used for GPU/CPU parallelization
+
+### Testing & Benchmarking
+- **Google Test** (BSD-3-Clause) - C++ testing framework
+- **Google Benchmark** (Apache-2.0) - Microbenchmarking library
