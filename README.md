@@ -64,5 +64,5 @@ limitations under the License.
 ## Dependencies
 
 - **Kokkos** (BSD-3-Clause) - Parallel programming ecosystem
-  - Automatically fetched via CMake FetchContent
+  - Automatically fetched via CMake FetchContent - not yet
   - Used for GPU/CPU parallelization of RK4 integration
