@@ -204,5 +204,7 @@
 ---
 Third-party dependencies:
 
-This project uses Kokkos (https://github.com/kokkos/kokkos)
-which is licensed under the BSD-3-Clause license.
+This project uses:
+- Kokkos (https://github.com/kokkos/kokkos) - BSD-3-Clause license
+- Google Test (https://github.com/google/googletest) - BSD-3-Clause license  
+- Google Benchmark (https://github.com/google/benchmark) - Apache-2.0 license
