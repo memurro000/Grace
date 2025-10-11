@@ -30,9 +30,9 @@ int main(int argc, char* argv[]) {
 
   vector_t integrated("integrated", 2);
   for (size_t i = 0; i < 100000; ++i) {
-    integrated = grace.step();
+    grace.step();
   }
-
+  integrated = grace.step();
 
 
   std::cout << "x: " << integrated(0) << std::endl <<
