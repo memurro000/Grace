@@ -1,0 +1,119 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Linker files
+*.ilk
+
+# Debugger Files
+*.pdb
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+script1.py
+
+# debug information files
+*.dwo
+
+
+
+
+# Build directories
+build/
+out/
+bin/
+*.exe
+*.out
+
+
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+
+# IDE files (VSCode, CLion, etc.)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+
+
+# Dependency directories
+_deps/
+
+
+
+# Testing and benchmarking outputs
+*.gcno
+*.gcda
+*.gcov
+gmon.out
+
+
+
+
+
+# Documentation
+docs/_build/
+doxygen/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Backup files
+*~
+*.bak
+*.backup
+
+
+
+
+# Temporary files
+*.tmp
+temp/
+*.swp
+
+# Kokkos specific (if any)
+*.ptx
+*.cubin
+
+# Coverage reports
+coverage/
+*.gcov
+*.lcov
