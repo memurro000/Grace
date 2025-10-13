@@ -26,15 +26,15 @@ namespace lib_testing {
         
         template <function_system System>
         static IntegratorBasicTestConfiguration make(
+            std::string&& name,
             size_t n_size, size_t n_steps, num_t dt,
-            std::string&& name, System&& system,
+            System&& system,
             std::function<num_t(size_t)> y_0_generator,
             std::function<num_t(size_t)> y_expected_result_generator
-            )
-                {
+            ) {
             IntegratorBasicTestConfiguration config{
                 n_size, n_steps,
-                dt, name, std::forward<system>(system),
+                dt, name, std::forward<System>(system),
                 vector_t("IntegratorBasicTestConfiguration._y_0", n_size),
                 vector_t("IntegratorBasicTestConfiguration._y_expected_result", n_size)
             };

@@ -7,6 +7,7 @@
 #include "preferenced.hpp"
 #include "fixtures.hpp"
 #include "factories.hpp"
+#include "generators.hpp"
 
 
 
@@ -66,16 +67,16 @@ namespace lib_testing {
                 "ZeroSystem", functions::zero_system,
                 vectors::make("_y_0"              , 50000, 1.0),
                 vectors::make("y_expected_result", 50000, 1.0)
-            }
+            },
+            IntegratorBasicTestConfiguration::make(
+                "ZeroSystem",
+                100, 1000, 0.1,
+                functions::zero_system,
+                generators::indexed::index,
+                generators::indexed::index
+            )
         )
     );
-
-
-
-
-
-
-
 
 
 
