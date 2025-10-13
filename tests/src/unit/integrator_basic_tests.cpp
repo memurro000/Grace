@@ -19,12 +19,13 @@ namespace lib_testing {
     
         vector_t current{config._y_0};
 
+
         for (size_t i = 0; i < config._n_steps; ++i) {
             current = integrator->step();
         }
 
         for (size_t i = 0; i < config._n_size; ++i) {
-            ASSERT_NEAR(current(i), config._y_expected_result(i), Grace::defaults::EPSILON);
+            ASSERT_NEAR(current(i), config._y_expected_result(i), Grace::defaults::EPSILON) << " on i = " << i;
         }
 
     }
@@ -33,47 +34,47 @@ namespace lib_testing {
 
     INSTANTIATE_TEST_SUITE_P(ZeroSystem, IntegratorBasicTest,
         testing::Values(
-            IntegratorBasicTestConfiguration{
-                0, 10,
-                0.1,
-                "ZeroSystem_Empty", functions::zero_system,
-                vectors::make("_y_0"              , 0),
-                vectors::make("y_expected_result", 0)
-            },
-            IntegratorBasicTestConfiguration{
-                1, 10,
-                0.1,
-                "ZeroSystem_Scalar", functions::zero_system,
-                vectors::make("_y_0"              , 1, 0.0),
-                vectors::make("y_expected_result", 1, 0.0)
-            },
-            IntegratorBasicTestConfiguration{
-                5, 100,
-                0.1,
-                "ZeroSystem", functions::zero_system,
-                vectors::make("_y_0"              , 5, 1.0),
-                vectors::make("y_expected_result", 5, 1.0)
-            },
-            IntegratorBasicTestConfiguration{
-                100, 1000,
-                0.1,
-                "ZeroSystem", functions::zero_system,
-                vectors::make("_y_0"              , 100, 1.0),
-                vectors::make("y_expected_result", 100, 1.0)
-            },
-            IntegratorBasicTestConfiguration{
-                50000, 1000,
-                0.1,
-                "ZeroSystem", functions::zero_system,
-                vectors::make("_y_0"              , 50000, 1.0),
-                vectors::make("y_expected_result", 50000, 1.0)
-            },
+            IntegratorBasicTestConfiguration::make(
+                "ZeroSystem",
+                0, 10, 0.1,
+                functions::zero_system,
+                generators::indexed::zero,
+                generators::indexed::zero
+            ),
+            IntegratorBasicTestConfiguration::make(
+                "ZeroSystem",
+                1, 100, 0.1,
+                functions::zero_system,
+                generators::indexed::zero,
+                generators::indexed::zero
+            ),
+            IntegratorBasicTestConfiguration::make(
+                "ZeroSystem",
+                100, 100, 0.1,
+                functions::zero_system,
+                generators::indexed::zero,
+                generators::indexed::zero
+            ),
+            IntegratorBasicTestConfiguration::make(
+                "ZeroSystem",
+                50000, 1000, 0.1,
+                functions::zero_system,
+                generators::indexed::zero,
+                generators::indexed::zero
+            ),
             IntegratorBasicTestConfiguration::make(
                 "ZeroSystem",
                 100, 1000, 0.1,
                 functions::zero_system,
                 generators::indexed::index,
                 generators::indexed::index
+            ),
+            IntegratorBasicTestConfiguration::make(
+                "ZeroSystem",
+                100, 1000, 0.1,
+                functions::zero_system,
+                generators::indexed::step2,
+                generators::indexed::step2
             )
         )
     );
