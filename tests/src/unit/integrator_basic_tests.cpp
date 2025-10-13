@@ -14,7 +14,7 @@ namespace lib_testing {
 
     TEST_P(IntegratorBasicTest, Step_FinalState_MatchesExpected) {
         ASSERT_EQ(config._n_size, config._y_0.extent(0));
-        ASSERT_EQ(config._n_size, config.y_expected_result.extent(0));
+        ASSERT_EQ(config._n_size, config._y_expected_result.extent(0));
     
         vector_t current{config._y_0};
 
@@ -23,7 +23,7 @@ namespace lib_testing {
         }
 
         for (size_t i = 0; i < config._n_size; ++i) {
-            ASSERT_NEAR(current(i), config.y_expected_result(i), Grace::defaults::EPSILON);
+            ASSERT_NEAR(current(i), config._y_expected_result(i), Grace::defaults::EPSILON);
         }
 
     }

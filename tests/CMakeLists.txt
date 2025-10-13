@@ -11,8 +11,16 @@ FetchContent_Declare(
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+set(CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE FILEPATH "CXX compiler" FORCE)
+set(CMAKE_C_COMPILER "${CMAKE_C_COMPILER}" CACHE FILEPATH "C compiler" FORCE)
+
+message(STATUS [LOG] "Compiler: ${CMAKE_CXX_COMPILER}")
 FetchContent_MakeAvailable(googletest)
+message(STATUS [LOG] "Compiler: ${CMAKE_CXX_COMPILER}")
 include(GoogleTest)
+
+message(STATUS [LOG] "Compiler: ${CMAKE_CXX_COMPILER}")
 
 
 

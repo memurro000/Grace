@@ -18,17 +18,37 @@ namespace lib_testing {
         size_t _n_steps;
 
         num_t _dt;
-        std::string name;
-        function_system_t system;
+        std::string _name;
+        function_system_t _system;
 
         vector_t _y_0;
-        vector_t y_expected_result;
-
-
-        IntegratorBasicTestConfiguration& n_size (size_t is) { _n_size = is;  return *this; }
-        IntegratorBasicTestConfiguration& n_steps(size_t is) { _n_steps = is; return *this; }
-        IntegratorBasicTestConfiguration& dt     (num_t  is) { _dt = is;      return *this; }
+        vector_t _y_expected_result;
         
+        template <function_system System>
+        static IntegratorBasicTestConfiguration make(
+            size_t n_size, size_t n_steps, num_t dt,
+            std::string&& name, System&& system,
+            std::function<num_t(size_t)> y_0_generator,
+            std::function<num_t(size_t)> y_expected_result_generator
+            )
+                {
+            IntegratorBasicTestConfiguration config{
+                n_size, n_steps,
+                dt, name, std::forward<system>(system),
+                vector_t("IntegratorBasicTestConfiguration._y_0", n_size),
+                vector_t("IntegratorBasicTestConfiguration._y_expected_result", n_size)
+            };
+            Kokkos::parallel_for("IntegratorBasicTestConfiguration::make_parallel_for", n_size,
+                KOKKOS_LAMBDA(const size_t i) {
+                    config._y_0(i)               = y_0_generator(i);
+                    config._y_expected_result(i) = y_expected_result_generator(i);
+                }
+            );
+            return config;
+        }
+
+
+
 
         std::string to_string() const {
             std::stringstream stream;
@@ -40,7 +60,7 @@ namespace lib_testing {
                << ", expected: [";
             for (size_t i = 0; i < std::min(size_t{3}, _n_size); ++i) {
                 if (i > 0) stream << ", ";
-                stream << y_expected_result(i);
+                stream << _y_expected_result(i);
             }
             if (_n_size > 3) stream << ", ...";
             stream << "]}";
@@ -48,10 +68,14 @@ namespace lib_testing {
         }
 
         std::string descriptor() const {
-            return name + "_NSize" + std::to_string(_n_size ) + 
-                         "_NSteps" + std::to_string(_n_steps);
+            return _name + "_NSize" + std::to_string(_n_size ) + 
+                          "_NSteps" + std::to_string(_n_steps);
         }
     };
+
+
+
+
 
     std::ostream& operator<<(std::ostream& stream, const IntegratorBasicTestConfiguration& config) {
         return stream << config.to_string();
@@ -66,7 +90,7 @@ namespace lib_testing {
     protected:
         void SetUp() override {
             config = GetParam();
-            integrator = std::make_unique<integrator_t>(config.system, config._y_0, config._dt);
+            integrator = std::make_unique<integrator_t>(config._system, config._y_0, config._dt);
         }
 
 
