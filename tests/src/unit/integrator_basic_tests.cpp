@@ -30,56 +30,29 @@ namespace lib_testing {
 
     }
 
+    namespace {
+
+        namespace gens = generators::indexed;
 
 
-    INSTANTIATE_TEST_SUITE_P(ZeroSystem, IntegratorBasicTest,
-        testing::Values(
-            IntegratorBasicTestConfiguration::make(
+        IntegratorPrecisionTestConfiguration make_for_zero_system(
+            size_t n_size, size_t n_steps, num_t dt = 0.1,
+            generators::indexed::generator_function_t vector_generator = gens::zero
+        ) {
+            return IntegratorPrecisionTestConfiguration::make(
                 "ZeroSystem",
-                0, 10, 0.1,
+                n_size, n_steps, dt,
                 functions::zero_system,
-                generators::indexed::zero,
-                generators::indexed::zero
-            ),
-            IntegratorBasicTestConfiguration::make(
-                "ZeroSystem",
-                1, 100, 0.1,
-                functions::zero_system,
-                generators::indexed::zero,
-                generators::indexed::zero
-            ),
-            IntegratorBasicTestConfiguration::make(
-                "ZeroSystem",
-                100, 100, 0.1,
-                functions::zero_system,
-                generators::indexed::zero,
-                generators::indexed::zero
-            ),
-            IntegratorBasicTestConfiguration::make(
-                "ZeroSystem",
-                50000, 1000, 0.1,
-                functions::zero_system,
-                generators::indexed::zero,
-                generators::indexed::zero
-            ),
-            IntegratorBasicTestConfiguration::make(
-                "ZeroSystem",
-                100, 1000, 0.1,
-                functions::zero_system,
-                generators::indexed::index,
-                generators::indexed::index
-            ),
-            IntegratorBasicTestConfiguration::make(
-                "ZeroSystem",
-                100, 1000, 0.1,
-                functions::zero_system,
-                generators::indexed::step2,
-                generators::indexed::step2
+                vector_generator, vector_generator
+            );
+        }
+
+        INSTANTIATE_TEST_SUITE_P(ZeroSystem, IntegratorBasicTest,
+            testing::Values(
             )
-        )
-    );
+        );
 
-
+    }
 
 } // namespace lib_testing
 

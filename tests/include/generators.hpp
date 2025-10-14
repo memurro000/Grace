@@ -6,11 +6,16 @@
 
 #include <random>
 #include <map>
+#include <functional>
 
 namespace lib_testing::generators::indexed
 {
 
-    using namespace Grace::defaults;
+    using Grace::defaults::num_t;
+
+    using generator_function_t = std::function<num_t (size_t)>;
+
+
 
     num_t zero(size_t i) {
         return num_t{0};
@@ -21,12 +26,32 @@ namespace lib_testing::generators::indexed
     }
 
 
-    num_t step2(size_t i) {
+    num_t index_step2(size_t i) {
         if (i % 2 == 0)
             return i;
         else
             return -i;
     }
+
+
+
+    generator_function_t shifted(const generator_function_t& generator, num_t shift) {
+        return [&](size_t i) {
+            return shift + generator(i);
+        };
+    }
+
+
+
+    generator_function_t constant(num_t value) {
+        return [value](size_t i) { return value; };
+    }
+
+
+    generator_function_t linear(num_t step) {
+        return [step](size_t i) { return step * i; };
+    }
+
 
 
 

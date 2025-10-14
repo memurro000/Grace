@@ -41,7 +41,7 @@ namespace Grace::defaults {
 
 
 
-    constexpr num_t EPSILON = 1e-12;
+    constexpr num_t EPSILON = 1e-11;
 
 
 

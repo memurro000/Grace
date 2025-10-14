@@ -15,14 +15,24 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 set(CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE FILEPATH "CXX compiler" FORCE)
 set(CMAKE_C_COMPILER "${CMAKE_C_COMPILER}" CACHE FILEPATH "C compiler" FORCE)
 
-message(STATUS [LOG] "Compiler: ${CMAKE_CXX_COMPILER}")
 FetchContent_MakeAvailable(googletest)
-message(STATUS [LOG] "Compiler: ${CMAKE_CXX_COMPILER}")
 include(GoogleTest)
 
-message(STATUS [LOG] "Compiler: ${CMAKE_CXX_COMPILER}")
 
 
+
+function(register_test TEST_DIR TEST_NAME)
+  set(TEST_PATH src/${TEST_DIR}/${TEST_NAME}.cpp)
+  set(TEST_EXEC ${TEST_DIR}_${TEST_NAME})
+  add_executable(${TEST_EXEC} ${TEST_PATH})
+  target_include_directories(
+    ${TEST_EXEC}
+    PRIVATE ${CMAKE_SOURCE_DIR}/lib/include 
+            include
+  )
+  target_link_libraries(${TEST_EXEC} PRIVATE Grace GTest::gtest_main)
+  gtest_discover_tests(${TEST_EXEC})
+endfunction()
 
 
 
@@ -43,18 +53,5 @@ set(
 
 
 
-set(TEST_DIR unit)
-
-
-set(TEST_NAME integrator_basic_tests)
-
-set(TEST_PATH src/${TEST_DIR}/${TEST_NAME}.cpp)
-set(TEST_EXEC ${TEST_DIR}_${TEST_NAME})
-add_executable(${TEST_EXEC} ${TEST_PATH})
-target_include_directories(
-  ${TEST_EXEC}
-  PRIVATE ${CMAKE_SOURCE_DIR}/lib/include 
-          include
-)
-target_link_libraries(${TEST_EXEC} PRIVATE Grace GTest::gtest_main)
-gtest_discover_tests(${TEST_EXEC})
+#register_test(unit integrator_basic_tests)
+register_test(unit integrator_precision_tests)
