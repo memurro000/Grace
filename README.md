@@ -16,30 +16,30 @@ High-performance RK4 ODE integrator in C++20 with Kokkos parallelization
 #include <iostream>
 
 int main(int argc, char* argv[]) {
-  using namespace Grace::defaults;
-  Grace::initialize(argc, argv);
+    using namespace Grace::defaults;
+    using Grace::systems::harmonic_oscillator;
+    using integrator_t = Grace::RK4::integrator<function_system_t>;
+
+    Grace::initialize(argc, argv);
 
 
-  vector_t initial_conditions("initial_conditions", 2);
-  initial_conditions(0) = 1.0;
-  initial_conditions(1) = 0.0;
+    vector_t initial_conditions("initial_conditions", 2);
+    initial_conditions(0) = 1.0;
+    initial_conditions(1) = 0.0;
 
-  auto system = Grace::systems::harmonic_oscillator(1.0);
-  auto grace = Grace::RK4::integrator<function_system_t>(system, initial_conditions).dt(0.0001);
-
-
-  vector_t integrated("integrated", 2);
-  for (size_t i = 0; i < 100000; ++i) {
-    grace.step();
-  }
-  integrated = grace.step();
+    auto system = harmonic_oscillator(1.0);
+    auto grace  = integrator_t<function_system_t>(system, 0.0, 12.5, 0.0001, initial_conditions);
+    vector_t current("current", 2);
 
 
-  std::cout << "x: " << integrated(0) << std::endl <<
-               "v: " << integrated(1) << std::endl;
+    while (grace.step(current));
 
 
-  Grace::finalize();
+    std::cout << "x: " << current(0) << std::endl <<
+                 "v: " << current(1) << std::endl;
+
+
+    Grace::finalize();
 }
 ```
 
