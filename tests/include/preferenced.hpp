@@ -25,12 +25,12 @@ namespace tests::preferenced
 
 
 #define TESTS_PREFERENCED_MAIN()                \
-    int main(int argc, char* argv[]) {           \
-        Grace::initialize(argc, argv);                      \
-        testing::InitGoogleTest(&argc, argv);   \
+    int main(int argc, char* argv[]) {          \
+        Grace::initialize(argc, argv);          \
         tests::preferenced::set_flags();        \
+        testing::InitGoogleTest(&argc, argv);   \
         return RUN_ALL_TESTS();                 \
-        Grace::finalize();                        \
+        Grace::finalize();                      \
     }
 
 
