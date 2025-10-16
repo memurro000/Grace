@@ -18,7 +18,7 @@ High-performance RK4 ODE integrator in C++20 with Kokkos parallelization
 int main(int argc, char* argv[]) {
     using namespace Grace::defaults;
     using Grace::systems::harmonic_oscillator;
-    using integrator_t = Grace::RK4::integrator<function_system_t>;
+    using Grace::RK4::make_integrator;
 
     Grace::initialize(argc, argv);
 
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     initial_conditions(1) = 0.0;
 
     auto system = harmonic_oscillator(1.0);
-    auto grace  = integrator_t<function_system_t>(system, 0.0, 12.5, 0.0001, initial_conditions);
+    auto grace  = make_integrator(system, 0.0, 12.5, 0.0001, initial_conditions);
     vector_t current("current", 2);
 
 

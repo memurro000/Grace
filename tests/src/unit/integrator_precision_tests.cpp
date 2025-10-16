@@ -17,17 +17,16 @@ namespace lib_testing {
         ASSERT_EQ(config._n_size, config._y_0.extent(0));
         ASSERT_EQ(config._n_size, config._y_expected_result.extent(0));
     
-        vector_t current{config._y_0};
 
 
-        size_t i = 0;
-        while (integrator->step(current));
+
+        auto result = integrator->integrate();
         
 
 
         for (size_t i = 0; i < config._n_size; ++i) {
             ASSERT_NEAR(
-                current(i), config._y_expected_result(i),
+                result(i), config._y_expected_result(i),
                 std::abs(Grace::defaults::EPSILON * config._y_expected_result(i))
             ) << " on i = " << i;
         }

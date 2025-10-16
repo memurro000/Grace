@@ -30,6 +30,10 @@ namespace Grace::RK4 {
 
 
 
+    template <typename T>
+    concept step_result_handler = requires(T&& t, Kokkos::View<const double *> step_result) {
+        { t(step_result) } -> std::same_as<void>;
+    };
 
 
 
@@ -62,8 +66,44 @@ namespace Grace::RK4 {
         }
 
 
-        bool step(vector_inout step_result) {
+        Kokkos::View<const double*> tie_step_result() const {
+            return _y;
+        }
 
+
+        bool step(Kokkos::View<const double*>& step_result) {
+            compute_step();
+            step_result = _y;
+            return _t < _parameters._t_end;
+        }
+
+    
+        bool step() {
+            compute_step();
+            return _t < _parameters._t_end;
+        }
+
+
+        Kokkos::View<const double *> integrate() {
+            while (step());
+            return tie_step_result();
+        }
+
+
+        template <step_result_handler Handler>
+        Kokkos::View<const double *> integrate(Handler&& handler) {
+            auto step_result = tie_step_result();
+            while (step()) {
+                handler(step_result);
+            }
+            return step_result; 
+        }
+
+
+
+    private:
+
+        void compute_step() {
             if (_t + _dt > _parameters._t_end) {
                 _dt = _parameters._t_end - _t;
                 _half_dt = _dt / 2.0;
@@ -78,15 +118,11 @@ namespace Grace::RK4 {
             _k4 = _system(_t + _dt, _y_temp);
             reconsider_solution(_y, _y, _k1, _k2, _k3, _k4, _dt);
 
-            Kokkos::deep_copy(step_result, _y);
-
             _t += _dt;
-            return _t < _parameters._t_end;
         }
 
 
 
-    private:
         struct {
             num_t _t_0;
             num_t _t_end;
@@ -109,6 +145,23 @@ namespace Grace::RK4 {
         vector _y_temp;
 
     };
+
+
+
+
+
+    template <function_system System>
+    integrator<std::decay_t<System>> make_integrator (
+        System&& system,
+        num_t t_0, num_t t_end, num_t dt,
+        vector_in y_0
+    ) {
+        return integrator<std::decay_t<System>>(
+            std::forward<System>(system),
+            t_0, t_end, dt,
+            y_0
+        );
+    }
 
 
 
