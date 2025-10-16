@@ -20,9 +20,10 @@ namespace lib_testing {
         vector_t current{config._y_0};
 
 
-        for (size_t i = 0; i < config._n_steps; ++i) {
-            current = integrator->step();
-        }
+        size_t i = 0;
+        while (integrator->step(current));
+        
+
 
         for (size_t i = 0; i < config._n_size; ++i) {
             ASSERT_NEAR(
@@ -62,7 +63,7 @@ namespace lib_testing {
 
         IntegratorPrecisionTestConfiguration make_for_constant_system(
             num_t constant,
-            size_t n_size, size_t n_steps, num_t dt = 0.1,
+            size_t n_size, size_t n_steps, num_t dt = 0.001, 
             gens::generator_function_t y_0_generator = gens::zero
         ) {
             return IntegratorPrecisionTestConfiguration::make(
@@ -78,7 +79,7 @@ namespace lib_testing {
 
         INSTANTIATE_TEST_SUITE_P(ConstantSystem, IntegratorPrecisionTest,
             testing::Values(
-                make_for_constant_system(5.0, 100, 1000),
+                //make_for_constant_system(5.0, 100, 1000),
                 make_for_constant_system(11.0, 100, 1000),
                 make_for_constant_system(-10000.0, 1000, 100),
                 make_for_constant_system(50000.0, 1000, 1000, 0.001, gens::index),

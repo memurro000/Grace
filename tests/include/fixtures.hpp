@@ -82,7 +82,7 @@ namespace lib_testing {
                     config._y_0(i)               = y_0_generator(i);
                 }
             );
-            config._y_expected_result = solution(config._y_0, 0, n_steps * dt);
+            config._y_expected_result = solution(config._y_0, 0.0, n_steps * dt);
 
             return config;
         }
@@ -129,7 +129,12 @@ namespace lib_testing {
     protected:
         void SetUp() override {
             config = GetParam();
-            integrator = std::make_unique<integrator_t>(config._system, config._y_0, config._dt);
+            integrator = std::make_unique<integrator_t>(
+                config._system, 
+                0.0, config._dt * config._n_steps, config._dt,
+                config._y_0
+            );
+            // integrator = std::make_unique<integrator_t>(config._system, config._y_0, config._dt);
         }
 
 
@@ -149,7 +154,11 @@ namespace lib_testing {
     protected:
         void SetUp() override {
             config = GetParam();
-            integrator = std::make_unique<integrator_t>(config._system, config._y_0, config._dt);
+            integrator = std::make_unique<integrator_t>(
+                config._system, 
+                0, config._dt * config._n_steps, config._dt, 
+                config._y_0
+            );
         }
 
 

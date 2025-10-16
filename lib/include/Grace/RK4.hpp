@@ -39,25 +39,76 @@ namespace Grace::RK4 {
 
         template <typename S = System>
         integrator(
-            S&& system, vector_in y_initial, 
-            num_t dt = 0.0001, num_t t_0 = 0.0
-            ) :
-            _system(std::forward<S>(system)),
+            S&& system,
+            num_t t_0, num_t t_end, num_t dt,
+            vector_in y_0
+        ) :
+            // Constants
+            _system{std::forward<S>(system)}, _size{y_0.extent(0)},
+            _parameters{t_0, t_end, dt}, 
+            _dt{dt}, _half_dt{ dt / 2 },
+            // Workers
             _t{t_0},
-            _dt{dt}, _half_dt{dt / 2},
-
-            _size{y_initial.extent(0)},
-            _y     ("y"     , _size),
+            _y("y", _size),
+            _is_valid{true},
+            // Temporaries
             _k1    ("k1"    , _size),
             _k2    ("k2"    , _size),
             _k3    ("k3"    , _size),
             _k4    ("k4"    , _size),
-            _y_temp("y_temp", _size) {
+            _y_temp("y_temp", _size)
+        {
+            // Workers
+            Kokkos::deep_copy(_y, y_0);
+        }
+
+
+        bool step(vector_inout step_result) {
+
+            if (_t + _dt > _parameters._t_end) {
+                _dt = _parameters._t_end - _t;
+                _half_dt = _dt / 2.0;
+            }
+
+            _k1 = _system(_t, _y);
+            linear_combination(_y_temp, _y, _half_dt, _k1);
+            _k2 = _system(_t + _half_dt, _y_temp);
+            linear_combination(_y_temp, _y, _half_dt, _k2);
+            _k3 = _system(_t + _half_dt, _y_temp);
+            linear_combination(_y_temp, _y, _dt, _k3);
+            _k4 = _system(_t + _dt, _y_temp);
+            reconsider_solution(_y, _y, _k1, _k2, _k3, _k4, _dt);
+
+            Kokkos::deep_copy(step_result, _y);
+
+            _t += _dt;
+            return _t < _parameters._t_end;
+        }
+
+
+
+        template <typename S = System>
+        integrator(
+            S&& system, vector_in y_initial, 
+            num_t dt = 0.0001, num_t t_0 = 0.0
+            ) :
+                _system(std::forward<S>(system)),
+                _t{t_0},
+                _dt{dt}, _half_dt{dt / 2},
+
+                _size{y_initial.extent(0)},
+                _y     ("y"     , _size),
+                _k1    ("k1"    , _size),
+                _k2    ("k2"    , _size),
+                _k3    ("k3"    , _size),
+                _k4    ("k4"    , _size),
+                _y_temp("y_temp", _size) 
+        {
             Kokkos::deep_copy(_y, y_initial);
         }
 
         integrator& limits(num_t left) { _t = left; return *this; }
-        integrator& dt(num_t dt) { _dt = dt; return *this; }
+        integrator& dt    (num_t dt  ) { _dt = dt;  return *this; }
 
 
         vector step() {
@@ -80,6 +131,13 @@ namespace Grace::RK4 {
 
 
     private:
+        struct {
+            num_t _t_0;
+            num_t _t_end;
+            num_t _dt;
+        } _parameters;
+
+
         size_t _size;
         size_t _steps_needed;
         num_t _dt;
@@ -94,6 +152,8 @@ namespace Grace::RK4 {
         vector _k3;
         vector _k4;
         vector _y_temp;
+
+        bool _is_valid;
     };
 
 
