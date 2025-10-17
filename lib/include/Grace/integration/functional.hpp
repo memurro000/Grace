@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-#ifndef GRACE_FUNCTIONAL_HPP
-#define GRACE_FUNCTIONAL_HPP
+#ifndef GRACE_INTEGRATION_FUNCTIONAL_HPP
+#define GRACE_INTEGRATION_FUNCTIONAL_HPP
 
 #include "defaults.hpp"
 
 
-namespace Grace::functional
+namespace Grace::integration::functional
 {
 
-    using namespace defaults::param;
+    using namespace defaults::parametric_vector;
     using defaults::num_t;
 
     inline 
@@ -77,7 +77,7 @@ namespace Grace::functional
         return done;
     }
 
-} // namespace Grace::functional
+} // namespace Grace::integration::functional
 
 
 #endif // GRACE_FUNCTIONAL_HPP

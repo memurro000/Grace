@@ -97,6 +97,20 @@ namespace lib_testing::functions {
         { callable(y_0, t_0, t_end) } -> std::convertible_to<vector_t>;
     };
 
+
+    vector_t zero_system_analytical(const vector_t& y_0, num_t t_0, num_t t_end) {
+        vector_t result("zero_system_analytical_result", y_0.extent(0));
+        Kokkos::parallel_for("zero_system_analytical_parallel_for", y_0.extent(0),
+            KOKKOS_LAMBDA(const size_t i) {
+                result(i) = y_0(i);
+            }
+        );
+        return result;
+    }
+    static_assert(analytical_solution<decltype(zero_system_analytical)>);
+
+
+
     class constant_system_analytical {
     public:
         constant_system_analytical(num_t value) : _filling{value} {}

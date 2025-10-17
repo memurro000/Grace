@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef GRACE_RK4_HPP
-#define GRACE_RK4_HPP
+#ifndef GRACE_RK4_NO_POLICIES_HPP
+#define GRACE_RK4_NO_POLICIES_HPP
 
 
 
@@ -23,9 +23,12 @@
 
 
 
-namespace Grace::RK4 {
-    using namespace functional;
+
+namespace Grace::RK4_no_policies {
+    using namespace integration::functional;
     using namespace defaults;
+
+
 
 
 
@@ -34,6 +37,7 @@ namespace Grace::RK4 {
     concept step_result_handler = requires(T&& t, Kokkos::View<const double *> step_result) {
         { t(step_result) } -> std::same_as<void>;
     };
+
 
 
 
@@ -196,4 +200,4 @@ namespace Grace::RK4 {
 
 
 
-#endif // GRACE_RK4_HPP
+#endif // GRACE_RK4_NO_POLICIES_HPP

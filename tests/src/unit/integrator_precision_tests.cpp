@@ -5,10 +5,10 @@
 
 
 #include "preferenced.hpp"
-#include "fixtures.hpp"
 #include "factories.hpp"
 #include "generators.hpp"
 
+#include "integrator_precision_tests.hpp"
 
 
 namespace lib_testing {
@@ -46,19 +46,10 @@ namespace lib_testing {
                 "ZeroSystem",
                 n_size, n_steps, dt,
                 functions::zero_system,
-                vector_generator, vector_generator
+                functions::zero_system_analytical,
+                vector_generator
             );
         }
-
-        INSTANTIATE_TEST_SUITE_P(ZeroSystem, IntegratorPrecisionTest,
-            testing::Values(
-                make_for_zero_system(50000, 1000),
-                make_for_zero_system(100, 1000, 0.1, gens::index),
-                make_for_zero_system(100, 1000, 0.1, gens::index_step2)
-            )
-        );
-
-
 
         IntegratorPrecisionTestConfiguration make_for_constant_system(
             num_t constant,
@@ -73,23 +64,6 @@ namespace lib_testing {
                 y_0_generator
             );
         }
-
-
-
-        INSTANTIATE_TEST_SUITE_P(ConstantSystem, IntegratorPrecisionTest,
-            testing::Values(
-                //make_for_constant_system(5.0, 100, 1000),
-                make_for_constant_system(11.0, 100, 1000),
-                make_for_constant_system(-10000.0, 1000, 100),
-                make_for_constant_system(50000.0, 1000, 1000, 0.001, gens::index),
-                make_for_constant_system(7000.0, 1000, 1000, 0.1, gens::index_step2),
-                make_for_constant_system(-10000.0, 1000, 1000, 0.001, gens::index_step2),
-                make_for_constant_system(10000.0, 2000, 1000, 0.001, gens::index_step2),
-                make_for_constant_system(10000.0, 2000, 10000, 0.0001, gens::index_step2),
-                make_for_constant_system(10000.0, 2000, 10000, 0.00001, gens::index_step2)
-            )
-        );
-
 
         IntegratorPrecisionTestConfiguration make_for_logistic_system(
             num_t alpha, num_t carrying_capacity,
@@ -110,16 +84,38 @@ namespace lib_testing {
 
 
 
+        INSTANTIATE_TEST_SUITE_P(ZeroSystem, IntegratorPrecisionTest,
+            testing::Values(
+                make_for_zero_system(100  , 1000                        ),
+                make_for_zero_system(100  , 1000, 0.1, gens::index      ),
+                make_for_zero_system(100  , 1000, 0.1, gens::index_step2),
+                make_for_zero_system(50000, 1000                        )
+            )
+        );
+
+        INSTANTIATE_TEST_SUITE_P(ConstantSystem, IntegratorPrecisionTest,
+            testing::Values(
+                make_for_constant_system(5.0     , 100 , 1000                             ),
+                make_for_constant_system(11.0    , 100 , 1000                             ),
+                make_for_constant_system(-10000.0, 1000, 100                              ),
+                make_for_constant_system(50000.0 , 1000, 1000 , 0.001  , gens::index      ),
+                make_for_constant_system(7000.0  , 1000, 1000 , 0.1    , gens::index_step2),
+                make_for_constant_system(-10000.0, 1000, 1000 , 0.001  , gens::index_step2),
+                make_for_constant_system(10000.0 , 2000, 1000 , 0.001  , gens::index_step2),
+                make_for_constant_system(10000.0 , 2000, 10000, 0.0001 , gens::index_step2),
+                make_for_constant_system(10000.0 , 2000, 10000, 0.00001, gens::index_step2)
+            )
+        );
 
         INSTANTIATE_TEST_SUITE_P(LogisticSystem, IntegratorPrecisionTest,
             testing::Values(
-                make_for_logistic_system(1.0, 100.0, 100, 100, 0.001, gens::constant(10.0)),
-                make_for_logistic_system(1.0, 100.0, 100, 100, 0.001, gens::constant(50.0)),
-                make_for_logistic_system(1.0, 100.0, 100, 100, 0.001, gens::constant(90.0)),
-                make_for_logistic_system(1.0, 100.0, 100, 100, 0.001, gens::constant(99.9)), // big occupancies
-                make_for_logistic_system(2.0, 100.0, 100, 100, 0.001, gens::linear  (0.01)), // small occupancies
-                make_for_logistic_system(0.1, 50.0, 50, 300, 0.01,    gens::constant(5.0 )), // Slow growth, small capacity
-                make_for_logistic_system(5.0, 1000.0, 200, 100, 0.1,  gens::constant(100.0)) // Fast growth, big capacity
+                make_for_logistic_system(1.0, 100.0 , 100, 100, 0.001, gens::constant(10.0) ),
+                make_for_logistic_system(1.0, 100.0 , 100, 100, 0.001, gens::constant(50.0) ),
+                make_for_logistic_system(1.0, 100.0 , 100, 100, 0.001, gens::constant(90.0) ),
+                make_for_logistic_system(1.0, 100.0 , 100, 100, 0.001, gens::constant(99.9) ), // big occupancies
+                make_for_logistic_system(2.0, 100.0 , 100, 100, 0.001, gens::linear(0.01)   ), // small occupancies
+                make_for_logistic_system(0.1, 50.0  , 50 , 300, 0.01 , gens::constant(5.0)  ), // Slow growth, small capacity
+                make_for_logistic_system(5.0, 1000.0, 200, 100, 0.1  , gens::constant(100.0)) // Fast growth, big capacity
             )
         );
 

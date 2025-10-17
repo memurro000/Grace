@@ -14,13 +14,32 @@
  * limitations under the License.
  */
 
-
-#include <stdexcept>
-#include <string>
-
-namespace Grace::RK4 {
+#ifndef GRACE_INTEGRATION_FACTORIES_HPP
+#define GRACE_INTEGRATION_FACTORIES_HPP
 
 
-
+namespace Grace::integration::factories {
     
-} // namespace Grace::RK4
+    template <function_system System>
+    auto make_RK4_integrator (
+        System&& system,
+        num_t t_0, num_t t_end, num_t dt,
+        vector_in y_0
+    ) -> integrator<RK4_method, std::decay_t<System>> 
+    {
+        return integrator<RK4_method, std::decay_t<System>>(
+            std::forward<System>(system),
+            t_0, t_end, dt,
+            y_0
+        );
+    }
+
+
+} // namespace Grace::integration::factories
+
+
+
+
+
+
+#endif // GRACE_INTEGRATION_FACTORIES_HPP

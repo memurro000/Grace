@@ -21,14 +21,35 @@
 
 namespace Grace {
 
+
+    class context {
+    public:
+        context(int argc, char* argv[]) {
+            Kokkos::initialize(argc, argv);
+        }
+
+
+        ~context() {
+            Kokkos::finalize();
+        }
+
+        context(context&&)                 = default;
+        context& operator=(context&&)      = default;
+        context(const context&)            = delete;
+        context& operator=(const context&) = delete;
+    };
+
     void initialize(int argc, char* argv[]) {
         Kokkos::initialize(argc, argv);
     }
+
 
     void finalize() {
         Kokkos::finalize();
     }
 
+
 }
+
 
 #endif // GRACE_HPP

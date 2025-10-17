@@ -44,7 +44,9 @@ message(STATUS "Kokkos options: ${Kokkos_OPTIONS}")
 
 
 add_subdirectory(lib)
+if(TRUE)
 add_subdirectory(tests)
+endif()
 if(FALSE)
     add_subdirectory(benchmarks)
 endif()

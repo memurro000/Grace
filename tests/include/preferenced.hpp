@@ -24,13 +24,14 @@ namespace tests::preferenced
 } // namespace tests::preferenced
 
 
-#define TESTS_PREFERENCED_MAIN()                \
-    int main(int argc, char* argv[]) {          \
-        Grace::initialize(argc, argv);          \
-        tests::preferenced::set_flags();        \
-        testing::InitGoogleTest(&argc, argv);   \
-        return RUN_ALL_TESTS();                 \
-        Grace::finalize();                      \
+#define TESTS_PREFERENCED_MAIN()                    \
+    int main(int argc, char* argv[]) {              \
+        Grace::initialize(argc, argv);              \
+        tests::preferenced::set_flags();            \
+        testing::InitGoogleTest(&argc, argv);       \
+        int test_result = RUN_ALL_TESTS();          \
+        return test_result;                         \
+        Grace::finalize();                          \
     }
 
 
