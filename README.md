@@ -6,8 +6,18 @@ High-performance RK4 ODE integrator in C++20 with Kokkos parallelization
 - Modern C++20 interface
 - Extensible system architecture
 
-## Quick Start
+
+
+
+## Getting started
+
+### Quick start
+
+Here's a minimal example that integrates a harmonic oscillator with trajectory output 
+using the RK4 method:
+
 ```cpp
+// main.cpp
 #include <Grace/Grace.hpp>
 #include <Grace/integration/factories.hpp>
 #include <Grace/systems.hpp>
@@ -45,7 +55,7 @@ int main(int argc, char* argv[]) {
                                                     // of the integration processing in the library
 }
 ```
-### Output:
+Output:
 ```dat
 # x              v
 0.995004        -0.0998333
