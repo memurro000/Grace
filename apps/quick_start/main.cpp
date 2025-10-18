@@ -1,13 +1,3 @@
-# Grace
-High-performance RK4 ODE integrator in C++20 with Kokkos parallelization
-
-## Features
-- RK4 method with Kokkos parallelization
-- Modern C++20 interface
-- Extensible system architecture
-
-## Quick Start
-```cpp
 #include <Grace/Grace.hpp>
 #include <Grace/integration/factories.hpp>
 #include <Grace/systems.hpp>
@@ -43,51 +33,7 @@ int main(int argc, char* argv[]) {
         }
     );                                              // There are more different convenient ways 
                                                     // of the integration processing in the library
+
+    
+
 }
-```
-### Output:
-```dat
-# x              v
-0.995004        -0.0998333
-0.980067        -0.198669
-0.955337        -0.29552
-0.921061        -0.389418
-...
-0.893201        0.449656
-0.933629        0.358238
-0.964729        0.263241
-0.98619         0.165614
-0.997797        0.0663322
-```
-
-
-
-
-
-## License
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-
-
-
-## Dependencies
-
-### Runtime
-- **Kokkos** (BSD-3-Clause) - Parallel programming ecosystem
-  - Automatically fetched via CMake FetchContent - not yet
-  - Used for GPU/CPU parallelization
-
-### Testing & Benchmarking
-- **Google Test** (BSD-3-Clause) - C++ testing framework
-- **Google Benchmark** (Apache-2.0) - Microbenchmarking library

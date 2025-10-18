@@ -50,6 +50,6 @@ endif()
 if(FALSE)
     add_subdirectory(benchmarks)
 endif()
-
+add_subdirectory(apps)
 
 

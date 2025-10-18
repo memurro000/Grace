@@ -17,17 +17,38 @@
 #ifndef GRACE_INTEGRATION_FACTORIES_HPP
 #define GRACE_INTEGRATION_FACTORIES_HPP
 
+#include "integration.hpp"
+#include "methods.hpp"
 
 namespace Grace::integration::factories {
+
+    using defaults::function_system;
+    using defaults::vector_t;
+
+    template <typename Method, function_system SystemT>
+        requires defaults::integration_method<Method, SystemT>
+    auto make_integrator(
+        SystemT&& system,
+        num_t t_0, num_t t_end, num_t dt,
+        const vector_t& y_0
+    ) -> integrator<Method, std::decay_t<SystemT>>
+    {
+        return integrator<Method, std::decay_t<SystemT>>(
+            std::forward<SystemT>(system),
+            t_0, t_end, dt,
+            y_0
+        );
+    }
+
     
     template <function_system System>
     auto make_RK4_integrator (
         System&& system,
         num_t t_0, num_t t_end, num_t dt,
-        vector_in y_0
-    ) -> integrator<RK4_method, std::decay_t<System>> 
+        const vector_t& y_0
+    ) -> integrator<methods::RK4, std::decay_t<System>> 
     {
-        return integrator<RK4_method, std::decay_t<System>>(
+        return integrator<methods::RK4, std::decay_t<System>>(
             std::forward<System>(system),
             t_0, t_end, dt,
             y_0
