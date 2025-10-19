@@ -22,17 +22,19 @@
 
 namespace Grace::integration::factories {
 
-    using defaults::function_system;
     using defaults::vector_t;
+    using defaults::function_system;
+    using defaults::integration_method;
 
-    template <typename Method, function_system SystemT>
-        requires defaults::integration_method<Method, SystemT>
+
+    template <integration_method Method> 
     auto make_integrator(
-        SystemT&& system,
+        function_system auto&& system,
         num_t t_0, num_t t_end, num_t dt,
         const vector_t& y_0
-    ) -> integrator<Method, std::decay_t<SystemT>>
+    )
     {
+        using SystemT = decltype(system);
         return integrator<Method, std::decay_t<SystemT>>(
             std::forward<SystemT>(system),
             t_0, t_end, dt,
@@ -41,15 +43,15 @@ namespace Grace::integration::factories {
     }
 
     
-    template <function_system System>
     auto make_RK4_integrator (
-        System&& system,
+        function_system auto&& system,
         num_t t_0, num_t t_end, num_t dt,
         const vector_t& y_0
-    ) -> integrator<methods::RK4, std::decay_t<System>> 
+    )
     {
-        return integrator<methods::RK4, std::decay_t<System>>(
-            std::forward<System>(system),
+        using SystemT = decltype(system);
+        return make_integrator<methods::RK4, std::decay_t<SystemT>>(
+            std::forward<SystemT>(system),
             t_0, t_end, dt,
             y_0
         );

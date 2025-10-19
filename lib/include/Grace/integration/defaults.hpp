@@ -21,11 +21,26 @@
 #include "../defaults.hpp"
 
 
+#ifndef GRACE_DEFAULT_VECTOR_T_OWNER
+#define GRACE_DEFAULT_VECTOR_T_OWNER(class_name)            \
+    /* vector_t ownership and no copy semantics specified */    \
+    class_name           (const class_name&) = delete;          \
+    class_name& operator=(const class_name&) = delete;          \
+    class_name           (class_name&&) = default;              \
+    class_name& operator=(class_name&&) = default;              \
+    ~class_name() = default;
+#endif // GRACE_DEFAULT_VECTOR_T_OWNER
+
+
+
+
+
 namespace Grace::integration::defaults
 {
     using Grace::defaults::num_t;
     using Grace::defaults::vector_t;
     using Grace::defaults::function_system;
+    using Grace::defaults::function_system_t;
 
     namespace parametric_vector = Grace::defaults::param;
 
@@ -40,14 +55,19 @@ namespace Grace::integration::defaults
 
     // A concept for policies used to select one of the integration methods
     template <typename Policy, typename FunctionSystemT>
-    concept integration_method =
+    concept integration_method_for =
+        function_system<FunctionSystemT> &&
         requires(Policy method, FunctionSystemT& system, vector_t& y, num_t& t) { // step method constraint
-            requires function_system<FunctionSystemT>;
             { method.step(system, y, t) } -> std::same_as<void>;
         } &&
         requires(size_t n_size, integration_parameters parameters) {           // constructor constraint
             { Policy(n_size, parameters) } -> std::same_as<Policy>;
         };
+    
+    template <typename Policy>
+    concept integration_method =
+        integration_method_for<Policy, function_system_t>;
+
 
 
 

@@ -31,10 +31,10 @@ namespace Grace::integration {
 
 
 
-    template <typename Method, function_system SystemT>
-        requires integration_method<Method, SystemT>
+    template <integration_method Method, function_system SystemT>
     class integrator {
     public:
+        GRACE_DEFAULT_VECTOR_T_OWNER(integrator)
 
         template <typename S = SystemT>
         integrator(

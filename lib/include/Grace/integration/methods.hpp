@@ -35,8 +35,14 @@ namespace Grace::integration::methods
 
 
 
+
+    // Methods
+
     class RK4 {
     public:
+        GRACE_DEFAULT_VECTOR_T_OWNER(RK4)
+
+
         RK4(size_t n_size, integration_parameters parameters) :
             _parameters(parameters),
             _dt{parameters._dt},
@@ -71,7 +77,7 @@ namespace Grace::integration::methods
 
 
     private:
-        const integration_parameters _parameters;
+        integration_parameters _parameters;
 
         num_t _dt;
         num_t _half_dt;
@@ -83,9 +89,35 @@ namespace Grace::integration::methods
         vector_t _y_temp;
 
     };
-    static_assert(integration_method<RK4, Grace::defaults::function_system_t>);
+    static_assert(integration_method<RK4>);
 
 
+
+
+    // Traits
+
+
+    template <typename Method>
+    struct method_traits;
+
+    template <typename Method>
+    concept described_method = integration_method<Method> && 
+        requires {
+            typename method_traits<Method>;
+            { method_traits<Method>::order             } -> std::convertible_to<int>;
+            { method_traits<Method>::convergence_order } -> std::convertible_to<int>;
+        };
+
+    template <>
+    struct method_traits<RK4> {
+        static constexpr int order = 4;
+        static constexpr int convergence_order = 4;
+    };
+
+
+
+
+    static_assert(described_method<RK4>);
 
 
 } // namespace Grace::integration::methods

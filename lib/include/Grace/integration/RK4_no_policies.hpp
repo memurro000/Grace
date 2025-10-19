@@ -168,32 +168,6 @@ namespace Grace::RK4_no_policies {
     }
 
 
-
-
-
-
-
-
-    // DEPRECATED
-    inline
-    void verify_integrate_parameters(num_t t_0, num_t t_end, num_t dt) {
-        using std::to_string;
-
-        if (dt <= 0.0) {
-            throw std::invalid_argument(
-                std::string("RK4::vector RK4::integrate needs dt > 0, got ") +
-                to_string(dt)
-            );
-        }
-
-        if (t_end <= t_0) {
-            throw std::invalid_argument(
-                std::string("RK4::vector RK4::integrate needs t_end > t_0, got ") +
-                to_string(t_end) + " and " + to_string(t_0)
-            );
-        }
-    }
-
 };
 
 
