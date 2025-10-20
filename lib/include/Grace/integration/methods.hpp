@@ -29,6 +29,7 @@ namespace Grace::integration::methods
     using defaults::vector_t;
     using defaults::integration_method;
     using defaults::integration_parameters;
+    using defaults::function_system;
 
     using functional::linear_combination;
     using functional::reconsider_solution;
