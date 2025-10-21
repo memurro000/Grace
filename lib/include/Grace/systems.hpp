@@ -22,7 +22,7 @@
 
 
 namespace Grace::systems {
-    using namespace defaults::param;
+    using namespace defaults::parametric_vector;
     using namespace defaults;
 
 

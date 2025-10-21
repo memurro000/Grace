@@ -1,6 +1,8 @@
 #ifndef TESTS_FIXTURES_HPP
 #define TESTS_FIXTURES_HPP
 
+#include <gtest/gtest.h>
+
 #include <Grace/defaults.hpp>
 #include <Grace/systems.hpp>
 #include <Grace/integration/integration.hpp>
@@ -77,6 +79,7 @@ namespace lib_testing {
         }
     };
 
+    inline
     std::string to_string(const IntegratorPrecisionTestConfiguration& config) {
         std::stringstream stream;
         stream << "IntegratorPrecisionTestConfiguration{\n"
@@ -94,6 +97,7 @@ namespace lib_testing {
         return stream.str();
     }
 
+    inline
     std::ostream& operator<<(std::ostream& stream, const IntegratorPrecisionTestConfiguration& config) {
         return stream << to_string(config);
     }

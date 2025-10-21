@@ -41,8 +41,10 @@ namespace Grace::integration::defaults
     using Grace::defaults::vector_t;
     using Grace::defaults::function_system;
     using Grace::defaults::function_system_t;
-
-    namespace parametric_vector = Grace::defaults::param;
+    namespace parametric_vector {
+        using namespace Grace::defaults::parametric_vector;
+    }
+    
 
 
 

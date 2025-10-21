@@ -17,39 +17,14 @@
 #ifndef GRACE_HPP
 #define GRACE_HPP
 
-#include <Kokkos_Core.hpp>
 
-namespace Grace {
+#include "defaults.hpp"
+#include "runtime.hpp"
+#include "systems.hpp"
 
-
-    class context {
-    public:
-        context(int argc, char* argv[]) {
-            Kokkos::initialize(argc, argv);
-        }
+#include "integration/integration.hpp"
 
 
-        ~context() {
-            Kokkos::finalize();
-        }
-
-        context(context&&)                 = default;
-        context& operator=(context&&)      = default;
-        context(const context&)            = delete;
-        context& operator=(const context&) = delete;
-    };
-
-    void initialize(int argc, char* argv[]) {
-        Kokkos::initialize(argc, argv);
-    }
-
-
-    void finalize() {
-        Kokkos::finalize();
-    }
-
-
-}
 
 
 #endif // GRACE_HPP

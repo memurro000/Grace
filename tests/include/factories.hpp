@@ -7,6 +7,7 @@ namespace lib_testing::vectors
     using Grace::defaults::num_t;
     using Grace::defaults::vector_t;
     
+    inline
     void fill(vector_t& vector, num_t with) {
         Kokkos::parallel_for(
             "zero_system_for1", vector.extent(0),
@@ -15,6 +16,7 @@ namespace lib_testing::vectors
             });
     }
 
+    inline
     vector_t make(const std::string& info, size_t n, num_t filling = num_t{0}) {
         vector_t done(info + " make_vector_done", n);
         fill(done, filling);
@@ -31,6 +33,7 @@ namespace lib_testing::functions {
     using function_system_basic_ptr_t = vector_t(*)(num_t, const vector_t&);
 
 
+    inline
     vector_t zero_system(num_t t, const vector_t& y) {
         return vectors::make("zero_system", y.extent(0));
     }
@@ -98,6 +101,7 @@ namespace lib_testing::functions {
     };
 
 
+    inline
     vector_t zero_system_analytical(const vector_t& y_0, num_t t_0, num_t t_end) {
         vector_t result("zero_system_analytical_result", y_0.extent(0));
         Kokkos::parallel_for("zero_system_analytical_parallel_for", y_0.extent(0),

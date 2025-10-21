@@ -46,7 +46,7 @@ namespace Grace::defaults {
 
 
 
-    namespace param
+    namespace parametric_vector
     {
         using vector       = vector_t;
         using vector_in    = const vector&;

@@ -19,22 +19,47 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type")
 
 
+if(TRUE)
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
+
+    find_program(CLANG_FORMAT "clang-format")
+    if(CLANG_FORMAT)
+        file(
+            GLOB_RECURSE ALL_SOURCE_FILES
+            "lib/*.cpp" "lib/*.hpp" "lib/*.h"
+            "apps/*.cpp" "apps/*.hpp" "apps/*.h" 
+            "tests/*.cpp" "tests/*.hpp" "tests/*.h"
+        )
+
+        add_custom_target(
+            check-format
+            COMMAND ${CLANG_FORMAT} --dry-run --Werror -style=file ${ALL_SOURCE_FILES}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Checking code formatting"
+        )
+        
+        add_custom_target(
+            format
+            COMMAND ${CLANG_FORMAT} -i -style=file ${ALL_SOURCE_FILES}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Formatting all source files"
+        )
+        
+        add_custom_target(
+            show-format
+            COMMAND ${CLANG_FORMAT} --output-replacements-xml -style=file ${ALL_SOURCE_FILES}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Showing formatting differences"
+        )
+    else()
+        message(WARNING "clang-format not found!")
+    endif()
+endif()
+
+
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-#set(CMAKE_C_COMPILER "clang.exe")
-#set(CMAKE_CXX_COMPILER "clang++.exe")
-
-#find_package(OpenMP REQUIRED)
-#if(OpenMP_CXX_FOUND)
-#    message(STATUS [LOG] "OpenMP found")
-#    
-#    # Для Windows с Clang
-#    if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-#        #target_link_libraries(your_target_name PRIVATE -lomp -lmingw32 -lmingwex)
-#
-#    else()
-#    endif()
-#endif()
 
 find_package(Kokkos REQUIRED)
 message(STATUS [LOG] "Kokkos found: ${Kokkos_DIR}")

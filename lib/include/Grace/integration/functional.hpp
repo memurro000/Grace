@@ -20,11 +20,10 @@
 #include "defaults.hpp"
 
 
-namespace Grace::integration::functional
-{
+namespace Grace::integration::functional {
 
+    using num_t = defaults::num_t;
     using namespace defaults::parametric_vector;
-    using defaults::num_t;
 
     inline 
     void linear_combination(
