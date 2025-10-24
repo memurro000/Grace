@@ -27,6 +27,21 @@ function(register_test TEST_DIR TEST_NAME)
   set(TEST_PATH src/${TEST_DIR}/${TEST_NAME}.cpp)
   set(TEST_EXEC ${TEST_DIR}_${TEST_NAME})
   add_executable(${TEST_EXEC} ${TEST_PATH})
+#  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+#    target_compile_options(
+#        ${TEST_EXEC} 
+#        PRIVATE
+#            -fno-omit-frame-pointer
+#            -fsanitize=address,undefined
+#            $<$<NOT:$<PLATFORM_ID:Windows>>:-fsanitize=leak>
+#    )
+#    target_link_options(
+#        ${TEST_EXEC} 
+#        PRIVATE
+#            -fsanitize=address,undefined
+#            $<$<NOT:$<PLATFORM_ID:Windows>>:-fsanitize=leak>
+#    )
+#  endif()
   target_include_directories(
     ${TEST_EXEC}
     PRIVATE ${CMAKE_SOURCE_DIR}/lib/include 

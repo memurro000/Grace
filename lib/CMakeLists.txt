@@ -1,5 +1,22 @@
 add_library(Grace STATIC src/Grace.cpp)
 
+message(STATUS [LOG] ${CMAKE_BUILD_TYPE})
+#if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+#target_compile_options(
+#    Grace
+#    PRIVATE
+#        -fno-omit-frame-pointer
+#        -fsanitize=address,undefined
+#        $<$<NOT:$<PLATFORM_ID:Windows>>:-fsanitize=leak>
+#)
+#target_link_options(
+#    Grace
+#    PRIVATE
+#        -fsanitize=address,undefined
+#        $<$<NOT:$<PLATFORM_ID:Windows>>:-fsanitize=leak>
+#)
+#endif()
+
 target_include_directories(
     Grace
     PUBLIC 
