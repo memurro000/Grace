@@ -12,7 +12,7 @@ High-performance RK4 ODE integrator in C++20 with Kokkos parallelization
 
 ### Quick start
 
-Here's a minimal example that integrates a harmonic oscillator with trajectory output 
+Here's a minimal example that integrates a harmonic oscillator with trajectory output
 using the RK4 method:
 
 ```cpp

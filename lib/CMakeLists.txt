@@ -1,20 +1,138 @@
 add_library(Grace STATIC src/Grace.cpp)
 
-message(STATUS [LOG] ${CMAKE_BUILD_TYPE})
-#if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-#target_compile_options(
-#    Grace
-#    PRIVATE
-#        -fno-omit-frame-pointer
-#        -fsanitize=address,undefined
-#        $<$<NOT:$<PLATFORM_ID:Windows>>:-fsanitize=leak>
-#)
-#target_link_options(
-#    Grace
-#    PRIVATE
-#        -fsanitize=address,undefined
-#        $<$<NOT:$<PLATFORM_ID:Windows>>:-fsanitize=leak>
-#)
+message(STATUS "Grace: build type is " ${CMAKE_BUILD_TYPE})
+
+message(STATUS "Grace: WARNING - Build flag system is incomplete and subject to change")
+message(STATUS "Grace: - Using PUBLIC visibility for compiler flags")
+message(STATUS "Grace: - Warnings and sanitizers will propagate to dependent targets")
+message(STATUS "Grace: - Use PRIVATE for target-specific optimization flags")
+
+target_compile_options(
+    Grace
+    PUBLIC  # TODO reconsider
+        # GNU, Clang, AppleClang
+        $<$<CXX_COMPILER_ID:GNU,Clang,AppleCLang>:
+            # Common
+                # Warnings
+                -Wall
+                -Wextra
+                -Wpedantic
+                -Wshadow
+                -Wnon-virtual-dtor
+                # -Wnull-dereference # TODO reconsider 
+                # -Wdouble-promotion # TODO reconsider
+
+                # Version-specific warnings
+                # $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,8>:-Wduplicated-cond>     # TODO reconsider 
+                # $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,6>:-Wduplicated-branches> # TODO reconsider 
+
+            # Debug
+            $<$<CONFIG:Debug>:
+                -O0
+                -g3
+                -D_GLIBCXX_DEBUG
+                -D_GLIBCXX_ASSERTIONS
+                -fno-inline
+                -fno-omit-frame-pointer
+                -fstack-protector-strong
+                -fstack-clash-protection 
+                # Sanitizer
+                -fno-sanitize-recover=undefined
+                -fsanitize-address-use-after-scope
+                -fsanitize=address,undefined
+                $<$<NOT:$<PLATFORM_ID:Windows,Darwin>>:
+                    -fsanitize=leak
+                >
+            >
+
+            # Release
+            $<$<CONFIG:Release>:
+                -O3
+                -DNDEBUG
+                
+                # Performance
+                -funroll-loops
+                -fomit-frame-pointer
+                -flto  # Link Time Optimization
+                -march=native
+                -mtune=native
+                
+                # TODO benchmark
+                # Security
+                -D_FORTIFY_SOURCE=2
+                -fstack-protector-strong
+            >
+
+            # RelWithDebInfo
+            $<$<CONFIG:RelWithDebInfo>:
+                -O2
+                -g
+                -DNDEBUG
+                -funroll-loops
+                -fomit-frame-pointer
+                -flto
+            >
+
+            # MinSizeRel
+            $<$<CONFIG:MinSizeRel>:
+                -Os
+                -DNDEBUG
+                -fomit-frame-pointer
+                -flto
+            >
+
+        >
+
+        # MSVC
+        $<$<CXX_COMPILER_ID:MSVC>:
+            # Common
+            /W4
+            /permissive-
+
+            # Debug
+            $<$<CONFIG:Debug>:
+                /Od
+                /Zi
+                /RTC1
+                /MDd
+            >
+
+            # Release
+            $<$<CONFIG:Release>:
+                /O2
+                /Ob2
+                /Gy
+                /DNDEBUG
+                /GL
+                /MD
+            >
+
+            # RelWithDebInfo
+            $<$<CONFIG:RelWithDebInfo>:
+                /O2
+                /Ob1
+                /Zi
+                /DNDEBUG
+                /MD
+            >
+
+        >
+
+)
+target_link_options(
+    Grace
+    PRIVATE
+        $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:
+            $<$<CONFIG:Debug>:
+                -fno-sanitize-recover=undefined
+                -fsanitize-address-use-after-scope  
+                -fsanitize=address,undefined
+                $<$<NOT:$<PLATFORM_ID:Windows,Darwin>>:
+                    -fsanitize=leak
+                >
+            >
+        >
+)
 #endif()
 
 target_include_directories(

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(
     Grace 
-    VERSION 1.0.0
+    VERSION 1.0.1
     DESCRIPTION "High-performance RK4 ODE integrator in C++20 with Kokkos parallelization"
     LANGUAGES CXX
 )
@@ -14,44 +14,71 @@ set(PROJECT_LICENSE "Apache-2.0")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type")
+
+set(DEFAULT_BUILD_TYPE "RelWithDebInfo")
 
 
-if(TRUE)
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 
-    find_program(CLANG_FORMAT "clang-format")
-    if(CLANG_FORMAT)
-        file(
-            GLOB_RECURSE ALL_SOURCE_FILES
-            "lib/*.cpp" "lib/*.hpp" "lib/*.h"
-            "apps/*.cpp" "apps/*.hpp" "apps/*.h" 
-            "tests/*.cpp" "tests/*.hpp" "tests/*.h"
-        )
 
-        add_custom_target(
-            check-format
-            COMMAND ${CLANG_FORMAT} --dry-run --Werror -style=file ${ALL_SOURCE_FILES}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Checking code formatting"
-        )
-        
-        add_custom_target(
-            format
-            COMMAND ${CLANG_FORMAT} -i -style=file ${ALL_SOURCE_FILES}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Formatting all source files"
-        )
-        
-        add_custom_target(
-            show-format
-            COMMAND ${CLANG_FORMAT} --output-replacements-xml -style=file ${ALL_SOURCE_FILES}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMENT "Showing formatting differences"
-        )
-    else()
-        message(WARNING "clang-format not found!")
-    endif()
+
+# Disable in-source builds to prevent source tree corruption.
+if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+  message(
+    FATAL_ERROR
+      "Grace FATAL: In-source builds are not allowed. \
+      You should create a separate directory for build files and delete CMakeCache.txt and CMakeFiles/."
+  )
+endif()
+
+if(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Grace: " "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
+    set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}"
+        CACHE STRING "Choose the type of build, \
+        options are: Debug, Release, RelWithDebInfo and MinSizeRel." 
+        FORCE
+    )
+endif()
+
+
+
+
+
+find_program(CLANG_TIDY clang-tidy)
+if(CLANG_TIDY)
+  set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY}")
+endif()
+
+find_program(CLANG_FORMAT clang-format)
+if(CLANG_FORMAT)
+    file(
+        GLOB_RECURSE ALL_SOURCE_FILES
+        "lib/*.cpp" "lib/*.hpp" "lib/*.h"
+        "apps/*.cpp" "apps/*.hpp" "apps/*.h" 
+        "tests/*.cpp" "tests/*.hpp" "tests/*.h"
+    )
+
+    add_custom_target(
+        check-format
+        COMMAND ${CLANG_FORMAT} --dry-run --Werror -style=file ${ALL_SOURCE_FILES}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Checking code formatting"
+    )
+    
+    add_custom_target(
+        format
+        COMMAND ${CLANG_FORMAT} -i -style=file ${ALL_SOURCE_FILES}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Formatting all source files"
+    )
+    
+    add_custom_target(
+        show-format
+        COMMAND ${CLANG_FORMAT} --output-replacements-xml -style=file ${ALL_SOURCE_FILES}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Showing formatting differences"
+    )
+else()
+    message(WARNING "clang-format not found!")
 endif()
 
 
