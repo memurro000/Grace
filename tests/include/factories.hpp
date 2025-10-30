@@ -84,7 +84,8 @@ concept analytical_solution = requires(Callable callable, vector_t y_0, num_t t_
 };
 
 
-inline vector_t zero_system_analytical(const vector_t & y_0, num_t t_0 [[maybe_unused]], num_t t_end[[maybe_unused]]) {
+inline vector_t zero_system_analytical(const vector_t & y_0, [[maybe_unused]] num_t t_0,
+                                       [[maybe_unused]] num_t t_end) {
     vector_t result("zero_system_analytical_result", y_0.extent(0));
     Kokkos::parallel_for(
         "zero_system_analytical_parallel_for", y_0.extent(0),
