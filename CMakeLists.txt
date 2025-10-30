@@ -5,7 +5,8 @@ cmake_minimum_required(VERSION 3.16)
 project(
     Grace 
     VERSION 1.0.2
-    DESCRIPTION "High-performance RK4 ODE integrator in C++20 with Kokkos parallelization"
+    DESCRIPTION     "High-performance extensible library for ODE integration \
+                    in C++20 with Kokkos parallelization"
     LANGUAGES CXX
 )
 set(CPACK_PACKAGE_LICENSE "Apache-2.0")

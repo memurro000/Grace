@@ -1,12 +1,12 @@
 # Grace
 
-High-performance RK4 ODE integrator in C++20 with Kokkos parallelization
+High-performance extensible library for ODE integration in C++20 with Kokkos parallelization
 
 ## Features
 
-- RK4 method with Kokkos parallelization
 - Modern C++20 interface
-- Extensible system architecture
+- Extensible architecture for integration methods
+- RK4 method with Kokkos parallelization
 
 ## Getting started
 
