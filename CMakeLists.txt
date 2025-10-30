@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(
     Grace 
-    VERSION 1.0.1
+    VERSION 1.0.2
     DESCRIPTION "High-performance RK4 ODE integrator in C++20 with Kokkos parallelization"
     LANGUAGES CXX
 )
@@ -18,8 +18,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(DEFAULT_BUILD_TYPE "RelWithDebInfo")
 
 
-
-
+option(ENABLE_CXX_OPTIONS_SAN "Use sanitizer compile and link options \
+    (requires working sanitizer support)" OFF)
+option(ENABLE_CXX_OPTIONS_NOLIB_UB_SAN "Enable UB sanitizer without library dependencies - \
+    provides detection only producing crash without pretty diagnostics" OFF)
+if(ENABLE_CXX_OPTIONS_SAN AND ENABLE_CXX_OPTIONS_NOLIB_UB_SAN)
+    message(
+        WARNING "Grace: "
+        "Both ENABLE_CXX_OPTIONS_SAN and ENABLE_CXX_OPTIONS_NOLIB_UB_SAN are enabled. This may cause conflicts."
+    )
+endif()
 
 # Disable in-source builds to prevent source tree corruption.
 if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
@@ -37,6 +45,8 @@ if(NOT CMAKE_BUILD_TYPE)
         options are: Debug, Release, RelWithDebInfo and MinSizeRel." 
         FORCE
     )
+else()
+    message(STATUS "Grace: build type is " ${CMAKE_BUILD_TYPE})
 endif()
 
 
@@ -92,6 +102,7 @@ message(STATUS "Kokkos devices: ${Kokkos_DEVICES}")
 message(STATUS "Kokkos options: ${Kokkos_OPTIONS}")
 
 
+include(GraceBuildFlagsIL.cmake)
 
 add_subdirectory(lib)
 if(TRUE)
