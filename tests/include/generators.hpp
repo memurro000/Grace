@@ -12,7 +12,7 @@ using generator_function_t = std::function<num_t(size_t)>;
 
 
 
-inline num_t zero(size_t i) { return num_t{ 0 }; }
+inline num_t zero([[maybe_unused]] size_t i) { return num_t{ 0 }; }
 
 inline num_t index(size_t i) { return i; }
 
@@ -30,7 +30,7 @@ inline generator_function_t shifted(const generator_function_t & generator, num_
 
 
 inline generator_function_t constant(num_t value) {
-    return [value](size_t i) { return value; };
+    return [value]([[maybe_unused]] size_t i) { return value; };
 }
 
 inline generator_function_t linear(num_t step) {

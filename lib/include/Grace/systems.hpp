@@ -32,7 +32,7 @@ class harmonic_oscillator {
     harmonic_oscillator(num_t omega) : _omega{ omega } {}
 
 
-    vector_out operator()(num_t t, vector_in y) const {
+    vector_out operator()([[maybe_unused]] num_t t, vector_in y) const {
         vector derivative("derivative", 2);
 
         derivative(0) = y(1);

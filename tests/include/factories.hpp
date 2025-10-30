@@ -27,7 +27,7 @@ using namespace Grace::defaults;
 using function_system_basic_ptr_t = vector_t (*)(num_t, const vector_t &);
 
 
-inline vector_t zero_system(num_t t, const vector_t & y) {
+inline vector_t zero_system(num_t t [[maybe_unused]], const vector_t & y) {
     return vectors::make("zero_system", y.extent(0));
 }
 
@@ -37,7 +37,7 @@ class constant_system {
   public:
     constant_system(num_t value) : _filling(value) {}
 
-    vector_t operator()(num_t t, const vector_t & y) {
+    vector_t operator()(num_t t [[maybe_unused]], const vector_t & y) {
         return vectors::make("constant_system", y.extent(0), _filling);
     }
 
@@ -57,7 +57,7 @@ class logistic_system {
         assert(std::isfinite(carrying_capacity));
     }
 
-    vector_t operator()(num_t t, const vector_t & y) {
+    vector_t operator()(num_t t [[maybe_unused]], const vector_t & y) {
         num_t    alpha = _alpha;
         num_t    K     = _K;
         vector_t result("logistic_derivative", y.extent(0));
@@ -84,7 +84,7 @@ concept analytical_solution = requires(Callable callable, vector_t y_0, num_t t_
 };
 
 
-inline vector_t zero_system_analytical(const vector_t & y_0, num_t t_0, num_t t_end) {
+inline vector_t zero_system_analytical(const vector_t & y_0, num_t t_0 [[maybe_unused]], num_t t_end[[maybe_unused]]) {
     vector_t result("zero_system_analytical_result", y_0.extent(0));
     Kokkos::parallel_for(
         "zero_system_analytical_parallel_for", y_0.extent(0),

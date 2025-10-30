@@ -38,13 +38,13 @@ template <integration_method Method, function_system SystemT> class integrator {
     template <typename S = SystemT>
     integrator(S && system, num_t t_0, num_t t_end, num_t dt, const vector_t & y_0) :
           // Constants
-          _system{ std::forward<S>(system) },
           _n_size{ y_0.extent(0) },
           _parameters{ t_0, t_end, dt },
+          _system{ std::forward<S>(system) },
           // Workers
+          _method(_n_size, _parameters),
           _t{ t_0 },
-          _y("y", _n_size),
-          _method(_n_size, _parameters) {
+          _y("y", _n_size) {
         // Workers
         Kokkos::deep_copy(_y, y_0);
     }
@@ -87,10 +87,8 @@ template <integration_method Method, function_system SystemT> class integrator {
     size_t                 _n_size;
     integration_parameters _parameters;
 
-
-    Method  _method;
     SystemT _system;
-
+    Method  _method;
 
     num_t    _t;
     vector_t _y;
