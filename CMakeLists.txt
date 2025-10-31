@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 
 
 project(
-    Grace 
+    Grace
     VERSION 1.0.2
     DESCRIPTION     "High-performance extensible library for ODE integration \
                     in C++20 with Kokkos parallelization"
@@ -43,7 +43,7 @@ if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "Grace: " "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
     set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}"
         CACHE STRING "Choose the type of build, \
-        options are: Debug, Release, RelWithDebInfo and MinSizeRel." 
+        options are: Debug, Release, RelWithDebInfo and MinSizeRel."
         FORCE
     )
 else()
@@ -64,7 +64,7 @@ if(CLANG_FORMAT)
     file(
         GLOB_RECURSE ALL_SOURCE_FILES
         "lib/*.cpp" "lib/*.hpp" "lib/*.h"
-        "apps/*.cpp" "apps/*.hpp" "apps/*.h" 
+        "apps/*.cpp" "apps/*.hpp" "apps/*.h"
         "tests/*.cpp" "tests/*.hpp" "tests/*.h"
     )
 
@@ -74,14 +74,14 @@ if(CLANG_FORMAT)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMENT "Checking code formatting"
     )
-    
+
     add_custom_target(
         format
         COMMAND ${CLANG_FORMAT} -i -style=file ${ALL_SOURCE_FILES}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMENT "Formatting all source files"
     )
-    
+
     add_custom_target(
         show-format
         COMMAND ${CLANG_FORMAT} --output-replacements-xml -style=file ${ALL_SOURCE_FILES}

@@ -118,3 +118,9 @@ temp/
 coverage/
 *.gcov
 *.lcov
+
+
+
+CMakeUserPresets.json
+
+install/
