@@ -53,12 +53,19 @@ endif()
 
 
 
-
+# clang-tidy is automatically executed
+# and reported with message if not accessible
 find_program(CLANG_TIDY clang-tidy)
 if(CLANG_TIDY)
-  set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY}")
+    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY}")
+else()
+    message(STATUS "Grace: " "clang-tidy not found and therefore not used")
 endif()
 
+# clang-format is executed (using .clang-format file)
+# with following custom targets:
+# check-format, format and show-format
+# and reported with message if not accessible
 find_program(CLANG_FORMAT clang-format)
 if(CLANG_FORMAT)
     file(
@@ -89,7 +96,7 @@ if(CLANG_FORMAT)
         COMMENT "Showing formatting differences"
     )
 else()
-    message(WARNING "clang-format not found!")
+    message(STATUS "Grace: " "clang-format not found and therefore not used")
 endif()
 
 
