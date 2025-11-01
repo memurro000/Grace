@@ -16,8 +16,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(DEFAULT_BUILD_TYPE "RelWithDebInfo")
+set(DEFAULT_BUILD_TYPE "Release")
 
+option(GRACE_BUILD_TESTS "Build tests specifically for Grace" $<IF:${BUILD_TESTS},ON,OFF>)
+option(GRACE_BUILD_BENCHMARKS "Build benchmarks specifically for Grace" $<IF:${BUILD_BENCHMARKS},ON,OFF>)
+option(GRACE_BUILD_APPS "Build apps specifically for Grace" $<IF:${BUILD_APPS},ON,OFF>)
 
 option(ENABLE_CXX_OPTIONS_SAN "Use sanitizer compile and link options \
     (requires working sanitizer support)" OFF)
@@ -105,20 +108,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 find_package(Kokkos REQUIRED)
-message(STATUS [LOG] "Kokkos found: ${Kokkos_DIR}")
-message(STATUS "Kokkos devices: ${Kokkos_DEVICES}")
-message(STATUS "Kokkos options: ${Kokkos_OPTIONS}")
+message(STATUS "Grace: " "Kokkos found: ${Kokkos_DIR}")
+message(STATUS "Grace: " "Kokkos devices: ${Kokkos_DEVICES}")
+message(STATUS "Grace: " "Kokkos options: ${Kokkos_OPTIONS}")
 
 
 include(GraceBuildFlagsIL.cmake)
 
 add_subdirectory(lib)
-if(TRUE)
-add_subdirectory(tests)
+if(GRACE_BUILD_TESTS)
+    add_subdirectory(tests)
 endif()
-if(FALSE)
+if(GRACE_BUILD_BENCHMARKS AND OFF)
     add_subdirectory(benchmarks)
 endif()
-add_subdirectory(apps)
-
-
+if(GRACE_BUILD_APPS)
+    add_subdirectory(apps)
+endif()
