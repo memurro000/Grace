@@ -34,8 +34,8 @@
 
 
 namespace Grace::integration::defaults {
-using Grace::defaults::function_system;
-using Grace::defaults::function_system_t;
+using Grace::defaults::ode_system;
+using Grace::defaults::ode_system_t;
 using Grace::defaults::num_t;
 using Grace::defaults::vector_t;
 namespace parametric_vector {
@@ -55,7 +55,7 @@ struct integration_parameters {
 // A concept for policies used to select one of the integration methods
 template <typename Policy, typename FunctionSystemT>
 concept integration_method_for =
-    function_system<FunctionSystemT> &&
+    ode_system<FunctionSystemT> &&
     requires(Policy method, FunctionSystemT & system, vector_t & y,
              num_t & t) { // step method constraint
         { method.step(system, y, t) } -> std::same_as<void>;
@@ -65,7 +65,7 @@ concept integration_method_for =
     };
 
 template <typename Policy>
-concept integration_method = integration_method_for<Policy, function_system_t>;
+concept integration_method = integration_method_for<Policy, ode_system_t>;
 
 
 

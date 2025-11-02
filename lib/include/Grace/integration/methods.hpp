@@ -19,12 +19,17 @@
 #define GRACE_INTEGRATION_METHODS_HPP
 
 
+#include "Grace/defaults.hpp"
 #include "defaults.hpp"
 #include "functional.hpp"
+#include <Kokkos_Array.hpp>
+#include <Kokkos_Macros.hpp>
+#include <impl/Kokkos_HostThreadTeam.hpp>
+
 
 namespace Grace::integration::methods {
 
-using defaults::function_system;
+using defaults::ode_system;
 using defaults::integration_method;
 using defaults::integration_parameters;
 using defaults::num_t;
@@ -53,7 +58,7 @@ class RK4 {
           _y_temp("y_temp", n_size) {}
 
 
-    template <function_system SystemT> void step(SystemT && system, vector_t & y, num_t & t) {
+    template <ode_system SystemT> void step(SystemT && system, vector_t & y, num_t & t) {
         if (t + _dt > _parameters._t_end) {
             _dt      = _parameters._t_end - t;
             _half_dt = _dt / 2.0;
@@ -86,6 +91,99 @@ class RK4 {
     vector_t _y_temp;
 };
 static_assert(integration_method<RK4>);
+
+
+
+class RK4_opt {
+  public:
+    GRACE_DEFAULT_VECTOR_T_OWNER(RK4_opt)
+
+
+    RK4_opt(size_t n_size, integration_parameters parameters) :
+          _parameters(parameters),
+          _dt{ parameters._dt },
+          _half_dt{ _dt / 2.0 },
+          _k{
+            vector_t("k1", n_size),
+            vector_t("k2", n_size),
+            vector_t("k3", n_size),
+            vector_t("k4", n_size)
+          },
+          _y_temp("y_temp", n_size) {}
+
+
+    template <ode_system SystemT> void step(SystemT && system, vector_t & y, num_t & t) {
+        if (t + _dt > _parameters._t_end) {
+            _dt      = _parameters._t_end - t;
+            _half_dt = _dt / 2.0;
+        }
+
+        Kokkos::parallel_for(
+            y.extent(0),
+            KOKK (const size_t i) {
+                _k[0](i) = y(i);
+            }
+        );
+
+
+
+        system(t           , y      , _k[0]);
+        comb(_y_temp, y, _half_dt, _k[0]);
+        system(t + _half_dt, _y_temp, _k[1]); comb(_y_temp, y, _half_dt, _k[1]);
+        system(t + _half_dt, _y_temp, _k[2]); comb(_y_temp, y, _dt     , _k[2]);
+        system(t + _dt     , _y_temp, _k[3]);
+
+        reconsider_solution(y, y, _k, _dt / 6.0);
+
+        t += _dt;
+    }
+
+
+  private:
+
+
+    KOKKOS_INLINE_FUNCTION
+    void comb(vector_t & result, const vector_t & x, num_t a, const vector_t & y) {
+        Kokkos::parallel_for(
+            x.extent(0),
+            KOKKOS_LAMBDA(const size_t i) {
+                result(i) = x(i) + a * y(i);
+            }
+        );
+    }
+
+
+
+    KOKKOS_INLINE_FUNCTION
+    void reconsider_solution(vector_t & result,
+        const vector_t & prev,
+        const Kokkos::Array<vector_t, 4> & k,
+        num_t dt_fract_6) {
+        Kokkos::parallel_for(
+            prev.extent(0),
+            KOKKOS_LAMBDA(const size_t i) {
+                result(i) = prev(i) + dt_fract_6 * (k[0](i) + 2.0 * (k[1](i) + k[2](i)) + k[3](i));
+            }
+        );
+    }
+
+    integration_parameters _parameters;
+
+    num_t _dt;
+    num_t _half_dt;
+
+    // TODO benchmark std::array alternative
+    Kokkos::Array<vector_t, 4> _k;
+
+    vector_t _y_temp;
+};
+static_assert(integration_method<RK4_opt>);
+
+
+
+
+
+
 
 
 

@@ -24,7 +24,7 @@ struct IntegratorPrecisionTestConfiguration {
     using indexed_generator_t = generators::indexed::generator_function_t;
 
     std::string       _name;
-    function_system_t _system;
+    ode_system_t _system;
 
     size_t _n_size;
     size_t _n_steps;
@@ -98,7 +98,7 @@ inline std::ostream & operator<<(std::ostream &                               st
 class IntegratorPrecisionTest :
       public testing::TestWithParam<IntegratorPrecisionTestConfiguration> {
   public:
-    using integrator_t = integration::integrator<integration::methods::RK4, function_system_t>;
+    using integrator_t = integration::integrator<integration::methods::RK4, ode_system_t>;
     // using integrator_t = Grace::RK4_no_policies::integrator<function_system_t>;
 
   protected:

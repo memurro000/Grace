@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef RK4_FUNCTIONS_HPP
-#define RK4_FUNCTIONS_HPP
+#ifndef GRACE_SYSTEMS_HPP
+#define GRACE_SYSTEMS_HPP
+
 
 #include "defaults.hpp"
+#include <Kokkos_Core_fwd.hpp>
+#include <Kokkos_Macros.hpp>
+#include <cstddef>
 
 
 
@@ -25,27 +29,40 @@ namespace Grace::systems {
 using namespace defaults::parametric_vector;
 using namespace defaults;
 
+#ifndef GRACE_UNUSED_PAR
+# define GRACE_UNUSED_PAR(par) (void)par
+#endif
 
 
 class harmonic_oscillator {
   public:
+
     harmonic_oscillator(num_t omega) : _omega{ omega } {}
 
 
-    vector_out operator()([[maybe_unused]] num_t t, vector_in y) const {
-        vector derivative("derivative", 2);
+    KOKKOS_FUNCTION
+    num_t operator()(num_t t, vector_in y, size_t i) const {
+        GRACE_UNUSED_PAR(t);
+        if (i == 0) {
+            return y(1);
+        }
+        else if (i == 1) {
+            return -_omega * _omega * y(0);
+        }
+    }
 
-        derivative(0) = y(1);
-        derivative(1) = -_omega * _omega * y(0);
-
-        return derivative;
+    KOKKOS_FUNCTION
+    void operator()(num_t t, vector_in y, vector_inout dybydt) const {
+        GRACE_UNUSED_PAR(t);
+        dybydt(0) = y(1);
+        dybydt(1) = -_omega * _omega * y(0);
     }
 
 
   private:
     num_t _omega;
 };
-static_assert(function_system<harmonic_oscillator>,
+static_assert(ode_system<harmonic_oscillator>,
               "harmonic_oscillator must fulfill function_system concept");
 
 
@@ -54,4 +71,4 @@ static_assert(function_system<harmonic_oscillator>,
 
 
 
-#endif // RK4_FUNCTIONS
+#endif // GRACE_SYSTEMS_HPP
