@@ -36,7 +36,7 @@ concept step_result_handler = requires(T && t, Kokkos::View<const double *> step
 
 
 
-template <function_system System> class integrator {
+template <ode_system System> class integrator {
   public:
     template <typename S = System>
     integrator(S && system, num_t t_0, num_t t_end, num_t dt, vector_in y_0) :
@@ -136,12 +136,12 @@ template <function_system System> class integrator {
 
 
 
-template <function_system System>
-integrator<std::decay_t<System>> make_integrator(System && system, num_t t_0, num_t t_end, num_t dt,
-                                                 vector_in y_0) {
-    return integrator<std::decay_t<System>>(std::forward<System>(system), t_0, t_end, dt, y_0);
-}
-
+//template <ode_system SystemT>
+//integrator<std::decay_t<SystemT>> make_integrator(SystemT && system, num_t t_0, num_t t_end, num_t dt,
+                                                 //vector_in y_0) {
+    //return integrator<std::decay_t<SystemT>>(std::forward<SystemT>(system), t_0, t_end, dt, y_0);
+//}
+//
 
 }; // namespace Grace::RK4_no_policies
 

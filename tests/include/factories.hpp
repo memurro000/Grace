@@ -1,6 +1,8 @@
 #ifndef TESTS_FACTORIES_HPP
 #define TESTS_FACTORIES_HPP
+#include "Grace/systems.hpp"
 #include <Grace/defaults.hpp>
+#include <cstddef>
 
 namespace lib_testing::vectors {
 using Grace::defaults::num_t;
@@ -31,20 +33,36 @@ inline vector_t zero_system(num_t t [[maybe_unused]], const vector_t & y) {
     return vectors::make("zero_system", y.extent(0));
 }
 
+inline num_t zero_system(num_t t, const vector_t & y, size_t i) {
+    GRACE_UNUSED_PAR(t);
+    GRACE_UNUSED_PAR(y);
+    GRACE_UNUSED_PAR(i);
+    return 0.0;
+}
+
+
 
 
 class constant_system {
   public:
     constant_system(num_t value) : _filling(value) {}
 
-    vector_t operator()(num_t t [[maybe_unused]], const vector_t & y) {
+    vector_t operator()(num_t t, const vector_t & y) {
+        GRACE_UNUSED_PAR(t);
         return vectors::make("constant_system", y.extent(0), _filling);
+    }
+
+    num_t operator()(num_t t, const vector_t & y, size_t i) {
+        GRACE_UNUSED_PAR(t);
+        GRACE_UNUSED_PAR(y);
+        GRACE_UNUSED_PAR(i);
+        return _filling;
     }
 
   private:
     num_t _filling;
 };
-static_assert(function_system<constant_system>, "constant_system must fulfill function_system");
+static_assert(ode_system<constant_system>);
 
 
 
@@ -69,12 +87,16 @@ class logistic_system {
         return result;
     }
 
+    num_t operator()(num_t t, const vector_t & y, size_t i) {
+        GRACE_UNUSED_PAR(t);
+        return _alpha * y(i) * (1.0 - y(i) / _K);
+    }
+
   private:
     num_t _alpha;
     num_t _K;
 };
-static_assert(function_system<logistic_system>,
-              "logistic_system must fulfill function_system concept");
+static_assert(ode_system<logistic_system>);
 
 
 

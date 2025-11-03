@@ -22,7 +22,7 @@
 
 
 namespace Grace::integration {
-using defaults::function_system;
+using defaults::ode_system;
 using defaults::integration_method;
 using defaults::integration_parameters;
 using defaults::num_t;
@@ -31,9 +31,9 @@ using defaults::vector_t;
 
 
 
-template <integration_method Method, function_system SystemT> class integrator {
+template <integration_method Method, ode_system SystemT> class integrator {
+    GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS(integrator)
   public:
-    GRACE_DEFAULT_VECTOR_T_OWNER(integrator)
 
     template <typename S = SystemT>
     integrator(S && system, num_t t_0, num_t t_end, num_t dt, const vector_t & y_0) :

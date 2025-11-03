@@ -21,15 +21,17 @@
 #include "../defaults.hpp"
 
 
-#ifndef GRACE_DEFAULT_VECTOR_T_OWNER
-#    define GRACE_DEFAULT_VECTOR_T_OWNER(class_name)             \
-        /* vector_t ownership and no copy semantics specified */ \
-        class_name(const class_name &)             = delete;     \
-        class_name & operator=(const class_name &) = delete;     \
-        class_name(class_name &&)                  = default;    \
-        class_name & operator=(class_name &&)      = default;    \
-        ~class_name()                              = default;
-#endif // GRACE_DEFAULT_VECTOR_T_OWNER
+#ifndef GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS
+#    define GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS(class_name)         \
+        /* vector_t ownership and no explicit copy semantics specified */ \
+      private:                                                            \
+        class_name(const class_name &)             noexcept = default;    \
+        class_name & operator=(const class_name &) noexcept = default;    \
+      public:                                                             \
+        class_name(class_name &&)                  noexcept = default;    \
+        class_name & operator=(class_name &&)      noexcept = default;    \
+        ~class_name()                              noexcept = default;
+#endif // GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS
 
 
 

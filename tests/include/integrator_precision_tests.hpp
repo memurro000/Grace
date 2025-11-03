@@ -5,7 +5,6 @@
 #include "generators.hpp"
 
 #include <Grace/defaults.hpp>
-#include <Grace/integration/RK4_no_policies.hpp>
 #include <Grace/integration/integration.hpp>
 #include <Grace/integration/methods.hpp>
 #include <Grace/systems.hpp>
@@ -35,7 +34,7 @@ struct IntegratorPrecisionTestConfiguration {
     vector_t _y_expected_result;
 
 
-    template <function_system System>
+    template <ode_system System>
     static IntegratorPrecisionTestConfiguration
         make_empty(std::string && name, size_t n_size, size_t n_steps, num_t dt, System && system) {
         return IntegratorPrecisionTestConfiguration{
@@ -49,7 +48,7 @@ struct IntegratorPrecisionTestConfiguration {
         };
     }
 
-    template <function_system System, analytical_solution Solution>
+    template <ode_system System, analytical_solution Solution>
     static IntegratorPrecisionTestConfiguration
         make(std::string name, size_t n_size, size_t n_steps, num_t dt, System && system,
              Solution && solution, indexed_generator_t y_0_generator) {

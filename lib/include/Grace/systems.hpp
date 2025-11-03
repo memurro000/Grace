@@ -40,7 +40,7 @@ class harmonic_oscillator {
     harmonic_oscillator(num_t omega) : _omega{ omega } {}
 
 
-    KOKKOS_FUNCTION
+    KOKKOS_INLINE_FUNCTION
     num_t operator()(num_t t, vector_in y, size_t i) const {
         GRACE_UNUSED_PAR(t);
         if (i == 0) {
@@ -49,6 +49,7 @@ class harmonic_oscillator {
         else if (i == 1) {
             return -_omega * _omega * y(0);
         }
+        return 0.0; // TODO consider throw
     }
 
     KOKKOS_FUNCTION

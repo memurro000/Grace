@@ -58,6 +58,12 @@ static_assert(ode_system<ode_system_t>);
 
 
 
+constexpr num_t EPSILON = 1e-11;
+
+
+
+
+
 } // namespace Grace::defaults
 
 
