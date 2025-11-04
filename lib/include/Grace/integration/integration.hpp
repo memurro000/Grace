@@ -19,6 +19,7 @@
 
 #include "Grace/defaults.hpp"
 #include "defaults.hpp"
+
 #include <Kokkos_Core.hpp>
 #include <exception>
 #include <stdexcept>
@@ -27,10 +28,10 @@
 
 
 namespace Grace::integration {
-using defaults::ode_system;
 using defaults::integration_method;
 using defaults::integration_parameters;
 using defaults::num_t;
+using defaults::ode_system;
 using defaults::step_result_handler;
 using defaults::vector_t;
 
@@ -39,22 +40,17 @@ using defaults::vector_t;
 template <integration_method Method, ode_system SystemT> class integrator {
     GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS(integrator)
   public:
-
     template <ode_system S>
-    integrator(S && system, num_t t_0, num_t t_end, num_t dt, const vector_t & y_0)
-    try :
-        integrator(std::forward<S>(system), integration_parameters{ t_0, t_end, dt }, y_0) {
-    }
-    catch (const integration_parameters::invalid_argument & e) {
+    integrator(S && system, num_t t_0, num_t t_end, num_t dt, const vector_t & y_0) try :
+          integrator(std::forward<S>(system), integration_parameters{ t_0, t_end, dt }, y_0) {
+    } catch (const integration_parameters::invalid_argument & e) {
         rethrow_with_construction_context(e.raw_info());
-    }
-    catch (...) { rethrow_with_construction_context(); }
+    } catch (...) { rethrow_with_construction_context(); }
 
 
 
     template <ode_system S>
-    integrator(S && system, integration_parameters params, const vector_t & y_0)
-    try :
+    integrator(S && system, integration_parameters params, const vector_t & y_0) try :
           // Constants
           _n_size{ y_0.extent(0) },
           _parameters{ std::move(params) },
@@ -65,12 +61,10 @@ template <integration_method Method, ode_system SystemT> class integrator {
           _y("y", _n_size) {
 
         if (_n_size <= 0)
-            throw std::invalid_argument("y_0 must have size > 0, got " +
-                std::to_string(_n_size));
+            throw std::invalid_argument("y_0 must have size > 0, got " + std::to_string(_n_size));
 
         Kokkos::deep_copy(_y, y_0);
-    }
-    catch (...) { rethrow_with_construction_context(); }
+    } catch (...) { rethrow_with_construction_context(); }
 
 
 
@@ -112,13 +106,10 @@ template <integration_method Method, ode_system SystemT> class integrator {
     [[noreturn]] static void rethrow_with_construction_context(const char * msg = nullptr) {
         try {
             throw;
-        }
-        catch (const std::exception & e) {
-            throw std::runtime_error("integrator construction: " + std::string(msg ? msg : e.what()));
-        }
-        catch (...) {
-            throw std::runtime_error("integrator construction: fail");
-        }
+        } catch (const std::exception & e) {
+            throw std::runtime_error("integrator construction: " +
+                                     std::string(msg ? msg : e.what()));
+        } catch (...) { throw std::runtime_error("integrator construction: fail"); }
     }
 
     void compute_step() noexcept { _method.step(_system, _y, _t); }

@@ -23,8 +23,8 @@
 
 namespace Grace::integration::factories {
 
-using defaults::ode_system;
 using defaults::integration_method;
+using defaults::ode_system;
 using defaults::vector_t;
 
 
@@ -32,15 +32,14 @@ template <integration_method Method>
 auto make_integrator(ode_system auto && system, defaults::integration_parameters params,
                      const vector_t & y_0) {
     using SystemT = decltype(system);
-    return integrator<Method, std::decay_t<SystemT>>(std::forward<SystemT>(system), std::move(params),
-                                                     y_0);
+    return integrator<Method, std::decay_t<SystemT>>(std::forward<SystemT>(system),
+                                                     std::move(params), y_0);
 }
 
 auto make_RK4_integrator(ode_system auto && system, defaults::integration_parameters params,
                          const vector_t & y_0) {
     using SystemT = decltype(system);
-    return make_integrator<methods::RK4>(std::forward<SystemT>(system),
-                                         std::move(params), y_0);
+    return make_integrator<methods::RK4>(std::forward<SystemT>(system), std::move(params), y_0);
 }
 
 

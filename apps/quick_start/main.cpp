@@ -1,4 +1,5 @@
 #include "Grace/integration/methods.hpp"
+
 #include <Grace/Grace.hpp>
 #include <Grace/integration/factories.hpp>
 #include <iostream>
@@ -26,9 +27,9 @@ int main(int argc, char * argv[]) {
 
 
     auto an_integrator = factories::make_integrator<methods::RK4>( // Create an RK4 integrator
-        systems::harmonic_oscillator(1.0),       // to integrate harmonic oscillator system
-        { 0.0, 12.5, 0.1 },                      // on interval from 0.0 to 12.5 with dt == 0.1
-        y_0);                                    // You can bring your systems fulfilling a concept
+        systems::harmonic_oscillator(1.0), // to integrate harmonic oscillator system
+        { 0.0, 12.5, 0.1 },                // on interval from 0.0 to 12.5 with dt == 0.1
+        y_0);                              // You can bring your systems fulfilling a concept
 
 
 

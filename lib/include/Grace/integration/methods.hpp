@@ -21,6 +21,7 @@
 
 #include "Grace/defaults.hpp"
 #include "defaults.hpp"
+
 #include <Kokkos_Array.hpp>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_Macros.hpp>
@@ -29,10 +30,10 @@
 
 namespace Grace::integration::methods {
 
-using defaults::ode_system;
 using defaults::integration_method;
 using defaults::integration_parameters;
 using defaults::num_t;
+using defaults::ode_system;
 using defaults::vector_t;
 
 
@@ -42,91 +43,67 @@ using defaults::vector_t;
 
 class RK4 {
     GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS(RK4);
-  public:
 
+  public:
     RK4(size_t n_size, integration_parameters parameters) :
           _parameters(parameters),
           _dt{ parameters.dt() },
           _half_dt{ _dt / 2.0 },
-          _k{
-            vector_t("k1", n_size),
-            vector_t("k2", n_size),
-            vector_t("k3", n_size),
-            vector_t("k4", n_size)
-          },
-          _y_temp{
-            vector_t("y_temp0", n_size),
-            vector_t("y_temp1", n_size),
-            vector_t("y_temp2", n_size)
-          }
-    {}
+          _k{ vector_t("k1", n_size), vector_t("k2", n_size), vector_t("k3", n_size),
+              vector_t("k4", n_size) },
+          _y_temp{ vector_t("y_temp0", n_size), vector_t("y_temp1", n_size),
+                   vector_t("y_temp2", n_size) } {}
 
 
-    template <ode_system SystemT>
-    void step(SystemT && system, vector_t & y, num_t & t) {
+    template <ode_system SystemT> void step(SystemT && system, vector_t & y, num_t & t) {
         if (t + _dt > _parameters.t_end()) {
             _dt      = _parameters.t_end() - t;
             _half_dt = _dt / 2.0;
         }
 
         Kokkos::parallel_for(
-            y.extent(0),
-            KOKKOS_CLASS_LAMBDA(const size_t i) {
-                _k[0](i) = system(t, y, i);
+            y.extent(0), KOKKOS_CLASS_LAMBDA(const size_t i) {
+                _k[0](i)      = system(t, y, i);
                 _y_temp[0](i) = comb(y(i), _half_dt, _k[0](i));
-            }
-        );
+            });
 
         // TODO consider space-dependent fences
         Kokkos::fence("RK4_opt step fence 1");
 
         Kokkos::parallel_for(
-            y.extent(0),
-            KOKKOS_CLASS_LAMBDA(const size_t i) {
-                _k[1](i) = system(t + _half_dt, _y_temp[0], i);
+            y.extent(0), KOKKOS_CLASS_LAMBDA(const size_t i) {
+                _k[1](i)      = system(t + _half_dt, _y_temp[0], i);
                 _y_temp[1](i) = comb(y(i), _half_dt, _k[1](i));
-            }
-        );
+            });
 
         Kokkos::fence("RK4_opt step fence 2");
 
         Kokkos::parallel_for(
-            y.extent(0),
-            KOKKOS_CLASS_LAMBDA(const size_t i) {
-                _k[2](i) = system(t + _half_dt, _y_temp[1], i);
+            y.extent(0), KOKKOS_CLASS_LAMBDA(const size_t i) {
+                _k[2](i)      = system(t + _half_dt, _y_temp[1], i);
                 _y_temp[2](i) = comb(y(i), _dt, _k[2](i));
-            }
-        );
+            });
 
         Kokkos::fence("RK4_opt step fence 3");
 
         Kokkos::parallel_for(
             y.extent(0),
-            KOKKOS_CLASS_LAMBDA(const size_t i) {
-                _k[3](i) = system(t + _dt, _y_temp[2], i);
-            }
-        );
+            KOKKOS_CLASS_LAMBDA(const size_t i) { _k[3](i) = system(t + _dt, _y_temp[2], i); });
 
         Kokkos::fence("RK4_opt step fence before solution recomp");
 
         Kokkos::parallel_for(
-            y.extent(0),
-            KOKKOS_CLASS_LAMBDA(const size_t i) {
-                y(i) += _dt / 6.0 *
-                    (_k[0](i) + 2.0 * (_k[1](i) + _k[2](i)) + _k[3](i));
-            }
-        );
+            y.extent(0), KOKKOS_CLASS_LAMBDA(const size_t i) {
+                y(i) += _dt / 6.0 * (_k[0](i) + 2.0 * (_k[1](i) + _k[2](i)) + _k[3](i));
+            });
 
         t += _dt;
     }
 
 
   private:
-
     KOKKOS_FORCEINLINE_FUNCTION
-    num_t comb(num_t x, num_t a, num_t y) const noexcept {
-        return x + a * y;
-    }
+    num_t comb(num_t x, num_t a, num_t y) const noexcept { return x + a * y; }
 
 
     integration_parameters _parameters;
@@ -137,15 +114,8 @@ class RK4 {
     Kokkos::Array<vector_t, 4> _k;
 
     Kokkos::Array<vector_t, 3> _y_temp;
-
 };
 static_assert(integration_method<RK4>);
-
-
-
-
-
-
 
 
 

@@ -19,6 +19,7 @@
 
 
 #include "defaults.hpp"
+
 #include <Kokkos_Core_fwd.hpp>
 #include <Kokkos_Macros.hpp>
 #include <cstddef>
@@ -30,13 +31,12 @@ using namespace defaults::parametric_vector;
 using namespace defaults;
 
 #ifndef GRACE_UNUSED_PAR
-# define GRACE_UNUSED_PAR(par) (void)par
+#    define GRACE_UNUSED_PAR(par) (void)par
 #endif
 
 
 class harmonic_oscillator {
   public:
-
     harmonic_oscillator(num_t omega) : _omega{ omega } {}
 
 
@@ -45,8 +45,7 @@ class harmonic_oscillator {
         GRACE_UNUSED_PAR(t);
         if (i == 0) {
             return y(1);
-        }
-        else if (i == 1) {
+        } else if (i == 1) {
             return -_omega * _omega * y(0);
         }
         return 0.0; // TODO consider throw

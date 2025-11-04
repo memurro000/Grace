@@ -32,13 +32,13 @@ namespace {
     namespace gens = generators::indexed;
 
 
-//    IntegratorPrecisionTestConfiguration make_for_zero_system(
-//        size_t n_size, size_t n_steps, num_t dt = 0.1,
-//        generators::indexed::generator_function_t vector_generator = gens::zero) {
-//        return IntegratorPrecisionTestConfiguration::make(
-//            "ZeroSystem", n_size, n_steps, dt, functions::zero_system,
-//            functions::zero_system_analytical, vector_generator);
-//    }
+    //    IntegratorPrecisionTestConfiguration make_for_zero_system(
+    //        size_t n_size, size_t n_steps, num_t dt = 0.1,
+    //        generators::indexed::generator_function_t vector_generator = gens::zero) {
+    //        return IntegratorPrecisionTestConfiguration::make(
+    //            "ZeroSystem", n_size, n_steps, dt, functions::zero_system,
+    //            functions::zero_system_analytical, vector_generator);
+    //    }
 
     IntegratorPrecisionTestConfiguration
         make_for_constant_system(num_t constant, size_t n_size, size_t n_steps, num_t dt = 0.001,
@@ -62,12 +62,13 @@ namespace {
 
 
 
-//    INSTANTIATE_TEST_SUITE_P(ZeroSystem, IntegratorPrecisionTest,
-//                             testing::Values(make_for_zero_system(100, 1000),
-//                                             make_for_zero_system(100, 1000, 0.1, gens::index),
-//                                             make_for_zero_system(100, 1000, 0.1,
-//                                                                  gens::index_step2),
-//                                             make_for_zero_system(50000, 1000)));
+    //    INSTANTIATE_TEST_SUITE_P(ZeroSystem, IntegratorPrecisionTest,
+    //                             testing::Values(make_for_zero_system(100, 1000),
+    //                                             make_for_zero_system(100, 1000, 0.1,
+    //                                             gens::index), make_for_zero_system(100, 1000,
+    //                                             0.1,
+    //                                                                  gens::index_step2),
+    //                                             make_for_zero_system(50000, 1000)));
 
     INSTANTIATE_TEST_SUITE_P(
         ConstantSystem, IntegratorPrecisionTest,

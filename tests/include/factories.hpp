@@ -1,6 +1,7 @@
 #ifndef TESTS_FACTORIES_HPP
 #define TESTS_FACTORIES_HPP
 #include "Grace/systems.hpp"
+
 #include <Grace/defaults.hpp>
 #include <cstddef>
 
@@ -39,7 +40,6 @@ inline num_t zero_system(num_t t, const vector_t & y, size_t i) {
     GRACE_UNUSED_PAR(i);
     return 0.0;
 }
-
 
 
 

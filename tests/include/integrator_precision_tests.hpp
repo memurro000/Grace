@@ -22,7 +22,7 @@ using functions::analytical_solution;
 struct IntegratorPrecisionTestConfiguration {
     using indexed_generator_t = generators::indexed::generator_function_t;
 
-    std::string       _name;
+    std::string  _name;
     ode_system_t _system;
 
     size_t _n_size;
