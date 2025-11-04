@@ -17,7 +17,12 @@
 #ifndef GRACE_INTEGRATION_INTEGRATION_HPP
 #define GRACE_INTEGRATION_INTEGRATION_HPP
 
+#include "Grace/defaults.hpp"
 #include "defaults.hpp"
+#include <Kokkos_Core.hpp>
+#include <exception>
+#include <stdexcept>
+#include <string>
 
 
 
@@ -35,41 +40,63 @@ template <integration_method Method, ode_system SystemT> class integrator {
     GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS(integrator)
   public:
 
-    template <typename S = SystemT>
-    integrator(S && system, num_t t_0, num_t t_end, num_t dt, const vector_t & y_0) :
+    template <ode_system S>
+    integrator(S && system, num_t t_0, num_t t_end, num_t dt, const vector_t & y_0)
+    try :
+        integrator(std::forward<S>(system), integration_parameters{ t_0, t_end, dt }, y_0) {
+    }
+    catch (const integration_parameters::invalid_argument & e) {
+        rethrow_with_construction_context(e.raw_info());
+    }
+    catch (...) { rethrow_with_construction_context(); }
+
+
+
+    template <ode_system S>
+    integrator(S && system, integration_parameters params, const vector_t & y_0)
+    try :
           // Constants
           _n_size{ y_0.extent(0) },
-          _parameters{ t_0, t_end, dt },
+          _parameters{ std::move(params) },
           _system{ std::forward<S>(system) },
           // Workers
           _method(_n_size, _parameters),
-          _t{ t_0 },
+          _t{ _parameters.t_0() },
           _y("y", _n_size) {
-        // Workers
+
+        if (_n_size <= 0)
+            throw std::invalid_argument("y_0 must have size > 0, got " +
+                std::to_string(_n_size));
+
         Kokkos::deep_copy(_y, y_0);
     }
+    catch (...) { rethrow_with_construction_context(); }
 
 
-    Kokkos::View<const double *> tie_step_result() const { return _y; }
+
+    Kokkos::View<const double *> tie_step_result() const noexcept { return _y; }
+
 
 
     bool step(Kokkos::View<const double *> & step_result) {
         compute_step();
         step_result = _y;
-        return _t < _parameters._t_end;
+        return _t < _parameters.t_end();
     }
 
 
     bool step() {
         compute_step();
-        return _t < _parameters._t_end;
+        return _t < _parameters.t_end();
     }
+
 
 
     Kokkos::View<const double *> integrate() {
         while (step());
         return tie_step_result();
     }
+
 
 
     template <step_result_handler Handler>
@@ -80,8 +107,21 @@ template <integration_method Method, ode_system SystemT> class integrator {
     }
 
 
+
   private:
-    void compute_step() { _method.step(_system, _y, _t); }
+    [[noreturn]] static void rethrow_with_construction_context(const char * msg = nullptr) {
+        try {
+            throw;
+        }
+        catch (const std::exception & e) {
+            throw std::runtime_error("integrator construction: " + std::string(msg ? msg : e.what()));
+        }
+        catch (...) {
+            throw std::runtime_error("integrator construction: fail");
+        }
+    }
+
+    void compute_step() noexcept { _method.step(_system, _y, _t); }
 
 
     size_t                 _n_size;

@@ -17,6 +17,7 @@
 #ifndef GRACE_INTEGRATION_FACTORIES_HPP
 #define GRACE_INTEGRATION_FACTORIES_HPP
 
+#include "defaults.hpp"
 #include "integration.hpp"
 #include "methods.hpp"
 
@@ -28,19 +29,18 @@ using defaults::vector_t;
 
 
 template <integration_method Method>
-auto make_integrator(ode_system auto && system, num_t t_0, num_t t_end, num_t dt,
+auto make_integrator(ode_system auto && system, defaults::integration_parameters params,
                      const vector_t & y_0) {
     using SystemT = decltype(system);
-    return integrator<Method, std::decay_t<SystemT>>(std::forward<SystemT>(system), t_0, t_end, dt,
+    return integrator<Method, std::decay_t<SystemT>>(std::forward<SystemT>(system), std::move(params),
                                                      y_0);
 }
 
-
-auto make_RK4_integrator(ode_system auto && system, num_t t_0, num_t t_end, num_t dt,
+auto make_RK4_integrator(ode_system auto && system, defaults::integration_parameters params,
                          const vector_t & y_0) {
     using SystemT = decltype(system);
-    return make_integrator<methods::RK4, std::decay_t<SystemT>>(std::forward<SystemT>(system), t_0,
-                                                                t_end, dt, y_0);
+    return make_integrator<methods::RK4>(std::forward<SystemT>(system),
+                                         std::move(params), y_0);
 }
 
 

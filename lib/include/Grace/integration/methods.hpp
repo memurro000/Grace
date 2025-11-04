@@ -21,7 +21,6 @@
 
 #include "Grace/defaults.hpp"
 #include "defaults.hpp"
-#include "functional.hpp"
 #include <Kokkos_Array.hpp>
 #include <Kokkos_Core.hpp>
 #include <Kokkos_Macros.hpp>
@@ -36,9 +35,6 @@ using defaults::integration_parameters;
 using defaults::num_t;
 using defaults::vector_t;
 
-using functional::linear_combination;
-using functional::reconsider_solution;
-
 
 
 // Methods
@@ -50,7 +46,7 @@ class RK4 {
 
     RK4(size_t n_size, integration_parameters parameters) :
           _parameters(parameters),
-          _dt{ parameters._dt },
+          _dt{ parameters.dt() },
           _half_dt{ _dt / 2.0 },
           _k{
             vector_t("k1", n_size),
@@ -68,8 +64,8 @@ class RK4 {
 
     template <ode_system SystemT>
     void step(SystemT && system, vector_t & y, num_t & t) {
-        if (t + _dt > _parameters._t_end) {
-            _dt      = _parameters._t_end - t;
+        if (t + _dt > _parameters.t_end()) {
+            _dt      = _parameters.t_end() - t;
             _half_dt = _dt / 2.0;
         }
 
@@ -128,7 +124,7 @@ class RK4 {
   private:
 
     KOKKOS_FORCEINLINE_FUNCTION
-    num_t comb(num_t x, num_t a, num_t y) const {
+    num_t comb(num_t x, num_t a, num_t y) const noexcept {
         return x + a * y;
     }
 
