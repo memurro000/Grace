@@ -1,0 +1,4 @@
+
+
+set(CPACK_PACKAGE_LICENSE "Apache-2.0")
+set(PROJECT_LICENSE "Apache-2.0")

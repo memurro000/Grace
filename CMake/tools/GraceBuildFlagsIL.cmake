@@ -20,12 +20,12 @@ target_compile_options(
                 -Wpedantic
                 -Wshadow
                 -Wnon-virtual-dtor
-                # -Wnull-dereference # TODO reconsider 
+                # -Wnull-dereference # TODO reconsider
                 # -Wdouble-promotion # TODO reconsider
 
                 # Version-specific warnings
-                # $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,8>:-Wduplicated-cond>     # TODO reconsider 
-                # $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,6>:-Wduplicated-branches> # TODO reconsider 
+                # $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,8>:-Wduplicated-cond>     # TODO reconsider
+                # $<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,6>:-Wduplicated-branches> # TODO reconsider
 
             # Debug
             $<$<CONFIG:Debug>:
@@ -39,7 +39,7 @@ target_compile_options(
 #                -fstack-clash-protection # TODO reconsider (reported to be unused)
 
                 # Sanitizer
-                $<$<BOOL:${ENABLE_CXX_OPTIONS_SAN}>:
+                $<$<BOOL:${GRACE_ENABLE_CXX_OPTIONS_SAN}>:
                     -fno-sanitize-recover=undefined
                     -fsanitize-address-use-after-scope
                     -fsanitize=address,undefined
@@ -47,7 +47,7 @@ target_compile_options(
                         -fsanitize=leak
                     >
                 >
-                $<$<BOOL:${ENABLE_CXX_OPTIONS_NOLIB_UB_SAN}>:
+                $<$<BOOL:${GRACE_ENABLE_CXX_OPTIONS_NOLIB_UB_SAN}>:
                     -fsanitize=undefined
                     -fsanitize-undefined-trap-on-error
                 >
@@ -57,14 +57,14 @@ target_compile_options(
             $<$<CONFIG:Release>:
                 -O3
                 -DNDEBUG
-                
+
                 # Performance
                 -funroll-loops
                 -fomit-frame-pointer
 #                -flto # TODO reconsider (file not recognized: file format not recognized)
                 -march=native
                 -mtune=native
-                
+
                 # TODO benchmark
                 # Security
                 -D_FORTIFY_SOURCE=2
@@ -133,7 +133,7 @@ target_link_options(
     INTERFACE
         $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:
             $<$<CONFIG:Debug>:
-                $<$<BOOL:${ENABLE_CXX_SAN_OPTIONS}>:
+                $<$<BOOL:${GRACE_ENABLE_CXX_OPTIONS_SAN}>:
                     -fno-sanitize-recover=undefined
                     -fsanitize-address-use-after-scope
                     -fsanitize=address,undefined
@@ -141,7 +141,7 @@ target_link_options(
                         -fsanitize=leak
                     >
                 >
-                $<$<BOOL:${ENABLE_CXX_NOLIB_UB_SAN_OPTION}>:
+                $<$<BOOL:${GRACE_ENABLE_CXX_OPTIONS_NOLIB_UB_SAN}>:
                     -fsanitize=undefined
                     -fsanitize-undefined-trap-on-error
                 >

@@ -28,7 +28,7 @@
             "inherits": "base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "ENABLE_CXX_OPTIONS_NOLIB_UB_SAN": "ON"
+                "GRACE_ENABLE_CXX_OPTIONS_NOLIB_UB_SAN": "ON"
             }
         },
         {
@@ -36,7 +36,7 @@
             "inherits": "base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "ENABLE_CXX_OPTIONS_SAN": "ON"
+                "GRACE_ENABLE_CXX_OPTIONS_SAN": "ON"
             }
         },
         {
