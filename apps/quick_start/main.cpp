@@ -1,5 +1,4 @@
-#include "Grace/integration/methods.hpp"
-
+#include <Grace/integration/methods.hpp>
 #include <Grace/Grace.hpp>
 #include <Grace/integration/factories.hpp>
 #include <iostream>
