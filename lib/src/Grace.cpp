@@ -15,9 +15,6 @@
  */
 
 
-#include <stdexcept>
-#include <string>
-
 namespace Grace::RK4 {
 
 
