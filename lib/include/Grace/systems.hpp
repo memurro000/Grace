@@ -62,8 +62,7 @@ class harmonic_oscillator {
   private:
     num_t _omega;
 };
-static_assert(ode_system<harmonic_oscillator>,
-              "harmonic_oscillator must fulfill function_system concept");
+static_assert(ode_system<harmonic_oscillator>);
 
 
 
