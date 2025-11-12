@@ -12,29 +12,28 @@ project(
 
 # Configurations
 # (options, variables)
-include(cmake/configurations/License.cmake)
-include(cmake/configurations/CXX.cmake)
-include(cmake/configurations/BuildType.cmake)
-include(cmake/configurations/ComponentBuilding.cmake)
-include(cmake/configurations/CXXOptionsEnabling.cmake)
-include(cmake/configurations/CompileCommandsExporting.cmake)
-
+include(CMake/configurations/License.cmake)
+include(CMake/configurations/CXX.cmake)
+include(CMake/configurations/BuildType.cmake)
+include(CMake/configurations/ComponentBuilding.cmake)
+include(CMake/configurations/CXXOptionsEnabling.cmake)
+include(CMake/configurations/CompileCommandsExporting.cmake)
 
 # Validation
 # (build validation and termination)
 
-include(cmake/validation/BuildDirectory.cmake)
+include(CMake/validation/BuildDirectory.cmake)
 
 # Tools
 # (Configuration tools for the project)
 
-include(cmake/tools/ClangTools.cmake)
-include(cmake/tools/GraceBuildFlagsIL.cmake)
+include(CMake/tools/ClangTools.cmake)
+include(CMake/tools/GraceBuildFlagsIL.cmake)
 
 
 
 
-include(cmake/package_enabling/Kokkos.cmake)
+include(CMake/package_enabling/Kokkos.cmake)
 
 
 add_subdirectory(lib)
