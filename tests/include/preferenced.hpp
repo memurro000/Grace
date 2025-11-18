@@ -27,8 +27,8 @@ inline void set_flags(bool         print_time_flag = defaults::FLAGS_PRINT_TIME,
         tests::preferenced::set_flags();        \
         testing::InitGoogleTest(&argc, argv);   \
         int test_result = RUN_ALL_TESTS();      \
-        return test_result;                     \
         Grace::runtime::finalize();             \
+        return test_result;                     \
     }
 
 

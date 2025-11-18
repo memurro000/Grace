@@ -35,6 +35,8 @@ namespace parametric_vector {
 } // namespace parametric_vector
 
 
+// TODO consider renaming and extracting
+using function_ptr_ode_system_t = num_t (*)(num_t, parametric_vector::vector_in, size_t);
 using ode_system_t = std::function<num_t(num_t, parametric_vector::vector_in, size_t)>;
 
 
@@ -46,6 +48,7 @@ concept ode_system =
 
 
 
+static_assert(ode_system<function_ptr_ode_system_t>);
 static_assert(ode_system<ode_system_t>);
 
 

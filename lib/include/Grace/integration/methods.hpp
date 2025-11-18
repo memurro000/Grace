@@ -49,10 +49,15 @@ class RK4 {
           _parameters(parameters),
           _dt{ parameters.dt() },
           _half_dt{ _dt / 2.0 },
-          _k{ vector_t("k1", n_size), vector_t("k2", n_size), vector_t("k3", n_size),
-              vector_t("k4", n_size) },
-          _y_temp{ vector_t("y_temp0", n_size), vector_t("y_temp1", n_size),
-                   vector_t("y_temp2", n_size) } {}
+          _k{ 
+                vector_t("k1", n_size), vector_t("k2", n_size), 
+                vector_t("k3", n_size), vector_t("k4", n_size) 
+            },
+          _y_temp{ 
+                vector_t("y_temp0", n_size), vector_t("y_temp1", n_size),
+                vector_t("y_temp2", n_size) 
+            } 
+            {}
 
 
     template <ode_system SystemT> void step(SystemT && system, vector_t & y, num_t & t) {

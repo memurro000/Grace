@@ -15,8 +15,24 @@
  */
 
 
-namespace Grace::RK4 {
+#include "Grace/integration/integration.hpp"
+#include "Grace/integration/methods.hpp"
+
+namespace Grace::integration {
+    template
+    class integrator<methods::RK4, Grace::defaults::function_ptr_ode_system_t>;
+
+    template
+    class integrator<methods::RK4, defaults::ode_system_t>;
+
+}
 
 
 
-} // namespace Grace::RK4
+namespace Grace {
+
+
+
+
+
+} // namespace Grace

@@ -37,7 +37,8 @@ using defaults::vector_t;
 
 
 
-template <integration_method Method, ode_system SystemT> class integrator {
+template <integration_method Method, ode_system SystemT> 
+class integrator {
     GRACE_DEFAULT_VECTOR_T_OWNER_CONSTRUCTORS(integrator)
   public:
     template <ode_system S>

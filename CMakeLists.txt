@@ -39,6 +39,7 @@ include(CMake/package_enabling/Kokkos.cmake)
 add_subdirectory(lib)
 
 if(GRACE_BUILD_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()
 if(GRACE_BUILD_BENCHMARKS AND OFF) # TODO create benchmarks

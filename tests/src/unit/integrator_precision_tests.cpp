@@ -107,4 +107,10 @@ namespace {
 
 
 
-TESTS_PREFERENCED_MAIN();
+int main(int argc, char* argv[]) {
+    Grace::runtime::initialize(argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
+    int result = RUN_ALL_TESTS();
+    Grace::runtime::finalize();
+    return result;
+}
